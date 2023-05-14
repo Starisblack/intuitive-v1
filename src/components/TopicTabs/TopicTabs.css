@@ -1,0 +1,44 @@
+.MuiButtonBase-root.Mui-selected{
+  color: rgb(186, 137, 60) !important;
+}
+
+.MuiTab-textColorPrimary.Mui-selected{
+    color:rgb(186, 137, 60) !important;
+}
+
+.MuiTabs-indicator{
+    background-color: #c9aeaa !important ;
+}
+
+.listing-container .MuiPaper-elevation{
+  height: 100%;
+}
+
+/* .listing-container{
+  padding: 5% 10%;
+} */
+
+.MuiPaper-rounded{
+  width: 100% !important;
+}
+
+.MuiGrid-item{
+  height: 100% !important;
+}
+
+@media (max-width: 769px) {
+    .topic-tab-container .MuiButtonBase-root{
+      font-size: 12px;
+      text-transform: capitalize;
+      padding: 0 !important;
+      min-width: 60px;
+    }
+
+    .MuiBox-root{
+      padding: 0 !important;
+    }
+
+    .listing-container{
+      padding: 5% 0;
+    }
+}

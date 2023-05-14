@@ -1,0 +1,25 @@
+.signUp-page{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.signUp-page form {
+  width: 100%;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.signUp-page a {
+  text-decoration: none;
+  color: rgb(186, 137, 60);
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.signUp-page a:hover {
+  color: rgb(186, 137, 60);
+}
+
+
+

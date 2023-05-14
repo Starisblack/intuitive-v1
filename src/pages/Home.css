@@ -1,0 +1,13 @@
+.home-page{
+    --ion-background-color:rgb(237, 239, 242);
+}
+.home-content-container{
+padding: 5% ;
+justify-content: center;
+}
+
+@media (min-width: 768px) {
+.home-content-container{
+    padding: 5% 10%;
+}
+}
