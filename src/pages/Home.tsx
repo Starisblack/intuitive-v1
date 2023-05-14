@@ -4,6 +4,7 @@ import {
   IonHeader,
   IonPage,
   IonSearchbar,
+  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -21,8 +22,8 @@ import {
 import db from "../firebase-config";
 import TopicTabs from "../components/TopicTabs/TopicTabs";
 import SearchBar from "../components/SearchBar/SearchBar";
-import "./Home.css"
-
+import "./Home.css";
+import Spinner from "../components/Spinner";
 
 const Home: React.FC = () => {
   const [userDetail, setUserDetail] = useState<any>();
@@ -31,11 +32,9 @@ const Home: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-
     window.scrollTo(0, 0);
 
     try {
-
       const getAllPosts = () => {
         const q = query(collection(db, "posts"), orderBy("created", "desc"));
 
@@ -53,21 +52,22 @@ const Home: React.FC = () => {
       getAllPosts();
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   }, []);
 
+  const searchInput = (e: any) => {
+    let userInput = e.target.value;
+    setUserInput(userInput);
+  };
 
- const searchInput = (e: any) => {
-   let userInput = e.target.value;
-   setUserInput(userInput);
- };
+  const searchHandler = (posts: any) => {
+    return posts.filter((post: any) =>
+      post.title.toLowerCase().includes(userInput.toLowerCase())
+    );
+  };
 
-
- const searchHandler = (posts: any) => {
-   return posts.filter((post: any) =>
-     post.title.toLowerCase().includes(userInput.toLowerCase())
-   );
- };
+  if (!posts) return <IonSpinner name="circles"></IonSpinner>;
 
   return (
     <IonPage>
@@ -77,14 +77,16 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-      <div className="home-content-container">
-            <SearchBar onChange={searchInput}/>
+        {!loading ? (
+          <div className="home-content-container">
+            <SearchBar onChange={searchInput} />
             <div style={{ marginTop: "30px" }}>
               <TopicTabs posts={searchHandler(posts)} />
             </div>
-
           </div>
-          
+        ) : (
+          <Spinner />
+        )}
       </IonContent>
     </IonPage>
   );
