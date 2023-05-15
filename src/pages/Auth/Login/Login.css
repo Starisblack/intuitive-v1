@@ -26,3 +26,8 @@
 .login-page a:hover {
   color: black;
 }
+
+
+.welcome-container{
+  text-align: center;
+}

@@ -42,7 +42,7 @@ const Login: FC = () => {
   const auth = useAppSelector(isAuth);
   const dispatch = useAppDispatch();
   const err = useAppSelector(error);
-  const loading = useAppSelector(loadingStatus)
+  const loading = useAppSelector(loadingStatus);
 
   const { register, handleSubmit, reset } = useForm<Inputs>();
 
@@ -77,6 +77,11 @@ const Login: FC = () => {
               <Avatar sx={{ m: 1, bgcolor: "rgb(186, 137, 60)" }}>
                 <LockOutlinedIcon />
               </Avatar>
+
+              <div className="welcome-container">
+                <h1>Hey! Welcome</h1>
+                <p>Welcome to the world of intuitive tarot reading</p>
+              </div>
 
               <form onSubmit={handleSubmit(onSubmitHandler)}>
                 <TextField
