@@ -12,9 +12,7 @@ import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { FC, useState } from "react";
 import { IonContent, IonLoading, IonPage } from "@ionic/react";
 import PasswordInput from "../../../components/PasswordInput";
-import { UserAuth } from "../../../context/AuthContext";
 import db from "../../../firebase-config";
-import Spinner from "../../../components/UI/Spinner/Spinner";
 
 type Inputs = {
   fName?: string;
