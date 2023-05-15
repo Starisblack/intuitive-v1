@@ -35,6 +35,8 @@ const Home: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const auth = useAppSelector(isAuth)
 
+  console.log(auth)
+
   useEffect(() => {
 
     if(!auth){
