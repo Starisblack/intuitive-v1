@@ -107,7 +107,7 @@ export const authSlice = createSlice({
       .addCase(logoutAsync.rejected, (state, action) => {
         state.loading = false;
         state.isAuth = false;
-        state.user = false;
+        state.user = null;
       });
   },
 });
