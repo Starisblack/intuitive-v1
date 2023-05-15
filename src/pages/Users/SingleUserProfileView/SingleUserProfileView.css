@@ -1,0 +1,12 @@
+.single-user-profile-page .toolbar-container{
+    --background: rgb(237, 239, 242) ;
+}
+
+.single-user-profile-page ion-content::part(background) {
+    background: rgb(237, 239, 242) ;
+  }
+
+
+  .single-user-profile-page .profile-content{
+    background-color: transparent;
+  }

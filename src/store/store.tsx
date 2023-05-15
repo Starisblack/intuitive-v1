@@ -6,14 +6,14 @@ import authReducers from "../reducers/authReducers";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 const persistConfig = {
-  key: 'root',
+  key: 'user',
   storage,
+  blacklist: ["loading", "id", "error"]
 }
 const persistedReducer = persistReducer(persistConfig, authReducers)
 
 export const store = configureStore({
   reducer: {
-    // Specify our reducer in the reducers object:
     auth: persistedReducer,
   },
   devTools: process.env.NODE_ENV !== 'production',
@@ -25,7 +25,7 @@ export const store = configureStore({
 
 export const persistor = persistStore(store)
 
-// Define the `RootState` as the return type:
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 

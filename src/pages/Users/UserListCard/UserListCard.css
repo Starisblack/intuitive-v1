@@ -1,0 +1,13 @@
+.MuiListItem-gutters{
+    align-items: center !important;
+    cursor: pointer;
+}
+
+.user-link{
+    text-decoration: none;
+    color: black;
+}
+
+.user-link:hover{
+    opacity: .8;
+}

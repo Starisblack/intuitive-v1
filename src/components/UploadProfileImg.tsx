@@ -10,6 +10,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 
+
 type UploadProfileImgProps = {
   id?: any;
 };
@@ -55,12 +56,18 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id }) => {
     uploadProfileImg(e.target.files[0])
   };
 
+  const redirect = () => {
+    window.location.reload()
+  }
+
+
+
   return (
     <IonIcon onClick={() => inputRef.current.click()} icon={camera}>
       <IonLoading
         cssClass="my-custom-class"
         isOpen={loading}
-        onDidDismiss={() => {}}
+        onDidDismiss={() =>  redirect()}
         message={"Uploading..."}
       />
       <input

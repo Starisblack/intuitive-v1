@@ -118,7 +118,7 @@ const Profile: FC = () => {
           }}
         >
           {" "}
-          <IonSpinner></IonSpinner>{" "}
+          <IonSpinner name="lines"></IonSpinner>{" "}
         </div>
       ) : (
         <IonPage>

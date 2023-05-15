@@ -26,6 +26,9 @@ import BottomTabs from './components/BottomTabs/BottomTabs';
 import Chat from './pages/Chat/Chat';
 import Users from './pages/Users/Users';
 import Profile from './pages/Profile/Profile';
+import SinglePost from './pages/Post/SinglePost/SinglePost';
+import SingleUserProfileView from './pages/Users/SingleUserProfileView/SingleUserProfileView';
+import Register from './pages/Auth/Register/Register';
 
 setupIonicReact();
 
@@ -44,6 +47,9 @@ const App: React.FC = () => (
         <Route exact path="/login">
           <Login />
         </Route>
+        <Route exact path="/register">
+          <Register />
+        </Route>
         <Route exact path="/chat">
           <Chat />
         </Route>
@@ -53,6 +59,13 @@ const App: React.FC = () => (
         <Route exact path="/profile">
           <Profile />
         </Route>
+        <Route exact path="/post/:id">
+          <SinglePost />
+        </Route>
+        <Route exact path="/user/:id">
+          <SingleUserProfileView />
+        </Route>
+
       </IonRouterOutlet>
       <BottomTabs />
     </IonReactRouter>

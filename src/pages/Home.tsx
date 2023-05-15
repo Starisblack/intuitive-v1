@@ -33,6 +33,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setLoading(true)
 
     try {
       const getAllPosts = () => {
@@ -76,18 +77,18 @@ const Home: React.FC = () => {
           <IonTitle>Home</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        {!loading ? (
+      {loading ? (
+        <Spinner />
+      ) : (
+        <IonContent fullscreen>
           <div className="home-content-container">
             <SearchBar onChange={searchInput} />
             <div style={{ marginTop: "30px" }}>
               <TopicTabs posts={searchHandler(posts)} />
             </div>
           </div>
-        ) : (
-          <Spinner />
-        )}
-      </IonContent>
+        </IonContent>
+      )}
     </IonPage>
   );
 };

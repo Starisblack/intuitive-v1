@@ -9,17 +9,26 @@ import { Link, useHistory } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import "./Register.css";
 import { doc, setDoc } from "firebase/firestore";
-import { FC, useState } from "react";
-import { IonContent, IonPage } from "@ionic/react";
+import { FC, useEffect, useState } from "react";
+import { IonContent, IonPage, IonSpinner } from "@ionic/react";
 import PasswordInput from "../../../components/PasswordInput";
-import { UserAuth } from "../../../context/AuthContext";
 import db from "../../../firebase-config";
-import Spinner from "../../../components/UI/Spinner/Spinner";
+import Spinner from "../../../components/Spinner";
+import { useAppDispatch, useAppSelector } from "../../../store/store";
+import {
+  clearError,
+  error,
+  isAuth,
+  loadingStatus,
+  setError,
+  signUpAsync,
+} from "../../../reducers/authReducers";
 
 type Inputs = {
   fName: string;
   lName: string;
   email: string;
+  id: string;
   password: string;
   confirmPassword: string;
   error: any;
@@ -28,53 +37,35 @@ type Inputs = {
 const Register: FC = () => {
   const history = useHistory();
 
-  const { createUser, setIsAuth } = UserAuth();
+  const Auth = useAppSelector(isAuth);
+  const err = useAppSelector(error);
+  const loading = useAppSelector(loadingStatus)
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const dispatch = useAppDispatch();
 
   const { handleSubmit, register, reset } = useForm<Inputs>();
 
-  const onSubmitHandler: SubmitHandler<Inputs> = async (data) => {
-    setLoading(true);
+  useEffect(() => {
+    if (Auth) {
+      history.push("/home");
+    } else {
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 4000);
+    }
+  }, [Auth, history]);
 
-    const { fName, lName, email, password, confirmPassword } = data;
+  const onSubmitHandler: SubmitHandler<Inputs> = async (userInput) => {
+
+    const { password, confirmPassword } = userInput;
 
     if (password !== confirmPassword) {
-      setError("Password do not match!");
-      setLoading(false);
+      dispatch(setError("Password do not match!"));
       setTimeout(() => {
-        setError("");
+        dispatch(clearError());
       }, 3000);
     } else {
-      try {
-        const addUserData = async () => {
-          const { user } = await createUser(email, password);
-          const userId = user.uid;
-
-          setDoc(doc(db, "users", userId), {
-            fName,
-            lName,
-            isTarot: false,
-            email: user.email,
-          });
-
-          reset();
-          setLoading(false);
-        };
-
-        await addUserData();
-        setIsAuth(true);
-        history.push("/home");
-      } catch (error: any) {
-        if (error.message === "Firebase: Error (auth/email-already-in-use).") {
-          setError("There is an account with this email, please Sign In");
-          setLoading(false);
-        }
-        setTimeout(() => {
-          setError("");
-        }, 3000);
-      }
+      dispatch(signUpAsync(userInput));
     }
   };
 
@@ -138,10 +129,11 @@ const Register: FC = () => {
                     textAlign: "center",
                   }}
                 >
-                  {error}
+                  {err}
                 </p>
 
                 <Button
+                  disabled={loading}
                   className="signup-button"
                   type="submit"
                   color="success"
@@ -153,7 +145,7 @@ const Register: FC = () => {
                     textTransform: "none",
                   }}
                 >
-                  {loading ? <Spinner /> : "Register"}
+                  {loading ?   <IonSpinner name="lines"></IonSpinner> : "Register"}
                 </Button>
                 <Grid container>
                   <Grid item>

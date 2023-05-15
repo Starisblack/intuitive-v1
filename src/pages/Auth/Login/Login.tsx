@@ -20,7 +20,13 @@ import {
   useIonViewDidEnter,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store/store";
-import { error, isAuth, loginAsync } from "../../../reducers/authReducers";
+import {
+  clearError,
+  error,
+  isAuth,
+  loadingStatus,
+  loginAsync,
+} from "../../../reducers/authReducers";
 
 type Inputs = {
   fName: string;
@@ -35,28 +41,25 @@ const Login: FC = () => {
   let history = useHistory();
   const auth = useAppSelector(isAuth);
   const dispatch = useAppDispatch();
-  const errorRedux = useAppSelector(error);
-  const [loading, setLoading] = useState(false);
-  const [isVisible, setIsvisible] = useState(false);
-
-  console.log(auth)
+  const err = useAppSelector(error);
+  const loading = useAppSelector(loadingStatus)
 
   const { register, handleSubmit, reset } = useForm<Inputs>();
 
   useEffect(() => {
     if (auth) {
       history.push("/home");
-    } 
+    } else {
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 3000);
+    }
   }, [auth]);
-
-
 
   //login in user and validate
   const onSubmitHandler: SubmitHandler<Inputs> = async (userInput) => {
-    setLoading(true);
     await dispatch(loginAsync(userInput));
-    setLoading(false);
-    reset()
+    reset();
   };
 
   return (
@@ -95,16 +98,17 @@ const Login: FC = () => {
                     Forgot password?
                   </Link>
                 </Grid>
-                <p style={{ color: "red" }}>{errorRedux}</p>
+                <p style={{ color: "red" }}>{err}</p>
 
                 <Button
+                  disabled={loading}
                   className="login-button"
                   type="submit"
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2, bgcolor: "rgb(186, 137, 60)" }}
                 >
-                  {loading ? <IonSpinner color="white"></IonSpinner> : "Login"}
+                  {loading ? <IonSpinner></IonSpinner> : "Login"}
                 </Button>
                 <Grid container>
                   <Grid item>

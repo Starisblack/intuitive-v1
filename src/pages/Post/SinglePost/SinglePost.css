@@ -1,0 +1,88 @@
+.singlePostPage ion-toolbar {
+  --background: white;
+  --min-height: none;
+  padding: 1rem 1rem 1rem 0 !important;
+  color: black;
+}
+
+.singlePostPage {
+    --ion-background-color: rgb(254, 238, 221)
+}
+
+.singlePostPage ion-icon {
+  font-size: 25px;
+}
+
+.singlePostPage .in-toolbar {
+  padding-right: 1.2rem;
+}
+
+.singlePostPage .ion-color-danger {
+  font-size: 20px;
+}
+
+.del-edit-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 6%;
+}
+
+#edit {
+  cursor: pointer;
+}
+
+.singlePage-container {
+  width: 600px;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 6% 0;
+}
+
+.post-content-container{
+  padding: 0 5%;
+}
+
+
+
+.singlePage-container ion-img {
+  height: 350px;
+}
+
+.singlePage-container h1 {
+  font-size: 20px;
+  margin: 1rem 0;
+}
+
+.singlePage-container p {
+  line-height: 24px;
+  color: #777;
+}
+
+.edit-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+  margin-right: 20px;
+}
+
+
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+@media (max-width: 769px) {
+   .singlePage-container{
+     padding-top: 0;
+   }
+}
