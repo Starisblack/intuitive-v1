@@ -24,14 +24,22 @@ import TopicTabs from "../components/TopicTabs/TopicTabs";
 import SearchBar from "../components/SearchBar/SearchBar";
 import "./Home.css";
 import Spinner from "../components/Spinner";
+import { useAppSelector } from "../store/store";
+import { isAuth } from "../reducers/authReducers";
+import { useHistory } from "react-router";
 
 const Home: React.FC = () => {
-  const [userDetail, setUserDetail] = useState<any>();
+  const history = useHistory()
   const [posts, setPosts] = useState<any>([]);
   const [userInput, setUserInput] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
+  const auth = useAppSelector(isAuth)
 
   useEffect(() => {
+
+    if(!auth){
+      history.push("/login")
+    }
     window.scrollTo(0, 0);
     setLoading(true)
 
@@ -55,7 +63,7 @@ const Home: React.FC = () => {
       console.log(error);
       setLoading(false);
     }
-  }, []);
+  }, [history]);
 
   const searchInput = (e: any) => {
     let userInput = e.target.value;
