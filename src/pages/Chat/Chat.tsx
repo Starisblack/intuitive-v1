@@ -7,14 +7,8 @@ import { logoutAsync } from '../../reducers/authReducers';
 const Chat: React.FC = () => {
 
   
-  useIonViewWillEnter(()=> console.log("chat"))
-// const dispatch = useAppDispatch()
 const history = useHistory();
 
-// const signOutHandler = async () => {
-//      await dispatch(logoutAsync())
-//      history.push("/login")
-// }
 
   return (
     <IonPage>

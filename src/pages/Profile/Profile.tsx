@@ -54,22 +54,21 @@ const Profile: FC = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
-  const [isVisible, setIsvisible] = useState<boolean>(false);
+ 
 
   const signOutHandler = async () => {
     await dispatch(logoutAsync());
     history.push("/login");
   };
 
-  useIonViewWillEnter(() => console.log("profile"));
-
   useEffect(() => {
     if (!userDetail) {
       history.push("/login");
     }
+    setLoading(true);
 
     const getUserDetails = async () => {
-      setLoading(true);
+     
       const userRef = doc(db, "users", userDetail.uid);
       onSnapshot(userRef, (doc) => {
         const userData: any = doc.data();
@@ -90,6 +89,7 @@ const Profile: FC = () => {
   };
 
 
+  
 
   let showProfileImg = null;
   let showPopUp = null;

@@ -28,6 +28,8 @@ const Users: React.FC = () => {
   const currentUser = useAppSelector(user);
   const [userInput, setUserInput] = useState("");
 
+
+
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
@@ -57,19 +59,25 @@ const Users: React.FC = () => {
     }
   }, [currentUser]);
 
-  useIonViewWillEnter(()=> console.log("user"))
+
 
   const searchInput = (e: any) => {
-    let userInput = e.target.value;
-    setUserInput(userInput);
+   
+    setUserInput(e.target.value);
   };
 
   const searchHandler = (users: any) => {
-    return users.filter((user: any) =>
-      user.fName.toLowerCase().includes(userInput.toLowerCase())
+    if(users){
+      return users.filter((user: any) =>
+      user.fName.toLowerCase().includes(userInput.toLowerCase()) || user.lName.toLowerCase().includes(userInput.toLowerCase())
     );
+    }
+   
+    return users
   };
 
+
+if(!users) return null
  
 
   return (
@@ -93,9 +101,9 @@ const Users: React.FC = () => {
             <IonSpinner name="lines"></IonSpinner>
           </div>
         ) : (
-          <> <SearchBar  onChange={searchInput} />
-          <UserListCard data={users} />
-          </>
+          <div style={{padding: "5%"}}> <SearchBar placeHolder="search users"  onChange={searchInput} />
+          <UserListCard data={searchHandler(users)} />
+          </div>
         )}
       </IonContent>
     </IonPage>

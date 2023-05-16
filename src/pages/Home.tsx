@@ -82,7 +82,6 @@ const Home: React.FC = () => {
     );
   };
 
-  useIonViewWillEnter(()=> console.log("home will"))
 
    
 
@@ -110,7 +109,7 @@ const Home: React.FC = () => {
       ) : (
         <IonContent fullscreen className="home-page">
           <div className="home-content-container">
-            <SearchBar onChange={searchInput} />
+            <SearchBar placeHolder="search posts" onChange={searchInput} />
             <div style={{ marginTop: "30px" }}>
               <TopicTabs posts={searchHandler(posts)} />
             </div>

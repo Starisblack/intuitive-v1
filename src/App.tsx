@@ -1,5 +1,5 @@
 import { Redirect, Route } from "react-router-dom";
-import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
+import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import Home from "./pages/Home";
 
@@ -25,24 +25,60 @@ import Login from "./pages/Auth/Login/Login";
 import BottomTabs from "./components/BottomTabs/BottomTabs";
 import Chat from "./pages/Chat/Chat";
 import Users from "./pages/Users/Users";
-// import Profile from "./pages/Profile/Profile";
-// import SinglePost from "./pages/Post/SinglePost/SinglePost";
+import Profile from "./pages/Profile/Profile";
+import SinglePost from "./pages/Post/SinglePost/SinglePost";
 import SingleUserProfileView from "./pages/Users/SingleUserProfileView/SingleUserProfileView";
 import Register from "./pages/Auth/Register/Register";
 import CreatePost from "./pages/Post/CreatePost/CreatePost";
 import ForgotPassword from "./pages/Auth/ForgotPassword/ForgotPassword";
-import { Suspense, lazy } from "react";
-import Spinner from "./components/Spinner";
+import { useAppSelector } from "./store/store";
+import { isAuth } from "./reducers/authReducers";
+import { people, home, chatbubbles, person } from "ionicons/icons";
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  const Profile = lazy(() => import("./pages/Profile/Profile"));
+
+  const auth = useAppSelector(isAuth)
+
+  let navTabs = (
+    <IonTabBar
+      style={{ border: "none", height: "0" }}
+      slot="bottom"
+    ></IonTabBar>
+  );
+
+
+  if (auth) {
+    navTabs = (
+      <IonTabBar slot="bottom">
+      
+        <IonTabButton tab="tab1" href="/home">
+          <IonIcon aria-hidden="true" icon={home} />
+          <IonLabel>Home</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="tab2" href="/chat">
+          <IonIcon aria-hidden="true" icon={chatbubbles} />
+          <IonLabel>Chat</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="tab3" href="/users">
+          <IonIcon aria-hidden="true" icon={people} />
+          <IonLabel>Users</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="tab4" href="/profile">
+          <IonIcon aria-hidden="true" icon={person} />
+          <IonLabel>Profile</IonLabel>
+        </IonTabButton>
+      </IonTabBar>
+    );
+  }
 
   return (
     <IonApp>
-      <div>
+    
         <IonReactRouter>
+        <IonTabs>
+        
           <IonRouterOutlet>
             <Route exact path="/home">
               <Home />
@@ -67,23 +103,27 @@ const App: React.FC = () => {
               <Users />
             </Route>
             <Route exact path="/profile">
-              <Suspense fallback={<Spinner />}>
                 <Profile />
-              </Suspense>
             </Route>
 
             <Route exact path="/user/:id">
               <SingleUserProfileView />
             </Route>
 
+            <Route exact path="/post/:id">
+              <SinglePost />
+            </Route>
+
             <Route exact path="/create-post">
               <CreatePost />
             </Route>
           </IonRouterOutlet>
-
-          <BottomTabs />
+          {navTabs}
+          </IonTabs>
+          
+          {/* <BottomTabs /> */}
         </IonReactRouter>
-      </div>
+      
     </IonApp>
   );
 };
