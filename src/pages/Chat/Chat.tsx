@@ -1,5 +1,4 @@
 import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../../components/ExploreContainer';
 import './Chat.css';
 import { useAppDispatch } from '../../store/store';
 import { useHistory } from 'react-router';
