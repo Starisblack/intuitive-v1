@@ -6,34 +6,33 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../../components/ExploreContainer";
 import "./Users.css";
 import UserListCard from "./UserListCard/UserListCard";
 import { useEffect, useState } from "react";
 import {
   collection,
   onSnapshot,
-  orderBy,
   query,
   where,
 } from "firebase/firestore";
 import db from "../../firebase-config";
 import { useAppSelector } from "../../store/store";
 import { user } from "../../reducers/authReducers";
+import SearchBar from "../../components/SearchBar/SearchBar";
+
 
 const Users: React.FC = () => {
   const [users, setUsers] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const currentUser = useAppSelector(user);
+  const [userInput, setUserInput] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
 
-    console.log(currentUser.uid);
-
     try {
-      const getAllPosts = () => {
+      const getAllUsers = () => {
         const q = query(
           collection(db, "users"),
           where("id", "!=", currentUser.uid)
@@ -50,12 +49,26 @@ const Users: React.FC = () => {
           setLoading(false);
         });
       };
-      getAllPosts();
+      getAllUsers();
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
-  }, []);
+  }, [currentUser]);
+
+
+  const searchInput = (e: any) => {
+    let userInput = e.target.value;
+    setUserInput(userInput);
+  };
+
+  const searchHandler = (users: any) => {
+    return users.filter((user: any) =>
+      user.fName.toLowerCase().includes(userInput.toLowerCase())
+    );
+  };
+
+ 
 
   return (
     <IonPage>
@@ -78,7 +91,9 @@ const Users: React.FC = () => {
             <IonSpinner name="lines"></IonSpinner>
           </div>
         ) : (
+          <> <SearchBar  onChange={searchInput} />
           <UserListCard data={users} />
+          </>
         )}
       </IonContent>
     </IonPage>

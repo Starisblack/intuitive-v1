@@ -9,6 +9,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import Toast from "./Toast/Toast";
 
 
 type UploadProfileImgProps = {
@@ -18,7 +19,7 @@ type UploadProfileImgProps = {
 const UploadProfileImg: FC<UploadProfileImgProps> = ({ id }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const inputRef: any = useRef();
-
+  const presentToast = Toast()
 
   const postDocRef = doc(db, "users", id);
 
@@ -56,9 +57,7 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id }) => {
     uploadProfileImg(e.target.files[0])
   };
 
-  const redirect = () => {
-    window.location.reload()
-  }
+
 
 
 
@@ -67,7 +66,7 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id }) => {
       <IonLoading
         cssClass="my-custom-class"
         isOpen={loading}
-        onDidDismiss={() =>  redirect()}
+        onDidDismiss={() =>  presentToast("Updated Successfully", 1500, "top")}
         message={"Uploading..."}
       />
       <input

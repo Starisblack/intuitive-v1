@@ -9,6 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import EditProfile from '../pages/Profile/EditProfile/EditProfile';
 import { IonLoading } from '@ionic/react';
 import { Redirect, useHistory } from 'react-router';
+import Toast from './Toast/Toast';
 
 type PopUpProps = {
     children?: any,
@@ -22,12 +23,10 @@ const PopUp: FC<PopUpProps> = ({id, openPopUp, handleClose, userDetail}) => {
   
   const [loading, setLoading] = useState(false);
   const history = useHistory()
+  const presentToast = Toast()
 
 
-   const redirect = () => {
-     <Redirect  to="/profile" />
-    //  history.push("/profile")
-   }
+  
 
 
   return (
@@ -35,7 +34,7 @@ const PopUp: FC<PopUpProps> = ({id, openPopUp, handleClose, userDetail}) => {
         <IonLoading
         cssClass="my-custom-class"
         isOpen={loading}
-        onDidDismiss={() =>  redirect()}
+        onDidDismiss={() =>  presentToast("Updated Successfully", 1500, "top")}
         message={"Updating..."}
       />
      {!loading && <Dialog open={openPopUp} onClose={handleClose}>

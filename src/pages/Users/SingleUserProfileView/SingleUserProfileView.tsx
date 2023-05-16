@@ -8,74 +8,82 @@ import {
   IonHeader,
   IonPage,
   IonRow,
+  IonSpinner,
   IonToolbar,
 } from "@ionic/react";
-import { Toolbar } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./SingleUserProfileView.css";
-import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 import db from "../../../firebase-config";
 import { useParams } from "react-router";
 import Spinner from "../../../components/Spinner";
 import { useSelector } from "react-redux";
 import { user } from "../../../reducers/authReducers";
+import Toast from "../../../components/Toast/Toast";
 
 const SingleUserProfileView = () => {
   const { id } = useParams<any>();
   const [userDetail, setUser] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [followLoading, setFollowLoading] = useState<boolean>(false);
   const currentUser = useSelector(user);
+  const  presentToast  = Toast();
 
   useEffect(() => {
     setLoading(true);
     const getUserDetails = async () => {
       const userRef = doc(db, "users", id);
-      const userSnap = await getDoc(userRef);
-      const userData: any = userSnap.data();
-      setUser(userData);
+
+      onSnapshot(userRef, (doc) => {
+        const userData: any = doc.data();
+        setUser(userData);
+      });
       setLoading(false);
     };
 
     getUserDetails();
-    setLoading(true);
   }, [id]);
 
   const followHandler = async (id: string) => {
-   
-
+    setFollowLoading(true)
     try {
-      // func to check if the user as document
-      const userRef = doc(db, "user", currentUser.uid);
-      const docSnap = await getDoc(userRef);
-
-
-      await updateDoc(doc(db, "users", currentUser.uid), {
-        following: arrayUnion({
-          id: userDetail.id,
-        }),
+      //  func to update user followers and those who are following
+      updateDoc(doc(db, "users", currentUser.uid), {
+        following: arrayUnion(userDetail.id),
+      }).then(() => {
+        updateDoc(doc(db, "users", id), {
+          followers: arrayUnion(currentUser.uid),
+        }).then((res) => {
+          setFollowLoading(false)
+          presentToast("Following", 1500 , "top" )
+        });
       });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-      await updateDoc(doc(db, "users", userDetail.id), {
-        followers: arrayUnion({
-          id: currentUser.id,
-        }),
+  const unFollowHandler = async (id: string) => {
+    setFollowLoading(true)
+    try {
+      //  func to update user followers and those who are following
+      updateDoc(doc(db, "users", currentUser.uid), {
+        following: arrayRemove(id),
+      }).then(() => {
+        updateDoc(doc(db, "users", id), {
+          followers: arrayRemove(currentUser.uid),
+        }).then((res) => {
+         setFollowLoading(false)
+         presentToast("success", 1500 , "top" )
+        });
       });
-
-      // if (docSnap.exists()) {
-    
-      // } else {
-        // await setDoc(doc(db, "users", currentUser.uid), {
-        //   following: arrayUnion({
-        //     id: userDetail.id,
-        //   }),
-        // });
-
-        // await setDoc(doc(db, "users", userDetail.id), {
-        //   followers: arrayUnion({
-        //     id: currentUser.id,
-        //   }),
-        // });
-      // }
     } catch (err) {
       console.log(err);
     }
@@ -120,13 +128,25 @@ const SingleUserProfileView = () => {
                     <IonRow>
                       <IonCol>
                         <div className="follow">
-                          <h3 className="font-light">0</h3>
-                          <p>Followers</p>
+                          <h3 className="font-light">
+                            {userDetail?.followers?.length >= 1
+                              ? userDetail?.followers?.length
+                              : 0}
+                          </h3>
+                          <p>
+                            {userDetail?.followers?.length <= 1
+                              ? "Follower"
+                              : "Followers"}
+                          </p>
                         </div>
                       </IonCol>
                       <IonCol>
                         <div className="follow">
-                          <h3 className="font-light">0</h3>
+                          <h3 className="font-light">
+                            {userDetail?.following?.length >= 1
+                              ? userDetail?.following?.length
+                              : 0}
+                          </h3>
                           <p>Following</p>
                         </div>
                       </IonCol>
@@ -134,12 +154,30 @@ const SingleUserProfileView = () => {
                   </IonGrid>
 
                   <IonButton style={{ margin: "10px" }}>Message</IonButton>
-                  <IonButton
-                    onClick={() => followHandler(userDetail.id)}
-                    style={{ margin: "10px" }}
-                  >
-                    Follow
-                  </IonButton>
+
+                  {userDetail?.followers?.includes(currentUser.uid) ? (
+                    <IonButton
+                      onClick={() => unFollowHandler(userDetail.id)}
+                      style={{ margin: "10px" }}
+                    >
+                      {followLoading ? (
+                        <IonSpinner name="dots"></IonSpinner>
+                      ) : (
+                        "Unfollow"
+                      )}
+                    </IonButton>
+                  ) : (
+                    <IonButton
+                      onClick={() => followHandler(userDetail.id)}
+                      style={{ margin: "10px" }}
+                    >
+                      {followLoading ? (
+                        <IonSpinner name="dots"></IonSpinner>
+                      ) : (
+                        "Follow"
+                      )}
+                    </IonButton>
+                  )}
                 </div>
               </div>
             </div>

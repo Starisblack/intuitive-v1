@@ -1,36 +1,40 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Button } from "@mui/material";
 import "./ForgotPassword.css";
-import { useNavigate } from "react-router-dom";
-import BeatLoader from "react-spinners/BeatLoader";
-import { UserAuth } from "../../../context/AuthContext";
+import { IonSpinner } from "@ionic/react";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../../../firebase-config";
 
 const ForgotPassword = () => {
-  const navigate = useNavigate();
-
-  //reset password func
-  console.log(UserAuth());
-  const { resetPassword } = UserAuth();
-
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const onChangeHandler = (e) => {
+  const onChangeHandler = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setEmail(e.target.value);
   };
 
-  const submitHandler = async (e) => {
+  const submitHandler = async (e: { preventDefault: () => void }) => {
+    setLoading(true)
     e.preventDefault();
     try {
-      await resetPassword(email);
-      setSuccess("Reset email sent!");
-    } catch (error) {
+      await sendPasswordResetEmail(auth, email);
+      setSuccess("Reset Email Sent! Check your inbox");
+      setTimeout(() => {
+        setSuccess("");
+      }, 3000);
+    } catch (error: any) {
       setError(error);
+
+      setTimeout(() => {
+        setError("");
+      }, 3000);
     }
   };
 
@@ -61,11 +65,8 @@ const ForgotPassword = () => {
             required
             fullWidth
             onChange={onChangeHandler}
-            id="email"
             label="Email Address"
             name="email"
-            autoComplete="email"
-            autoFocus
           />
 
           <Button
@@ -73,9 +74,13 @@ const ForgotPassword = () => {
             fullWidth
             variant="contained"
             color="success"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 3, mb: 2, bgcolor: "rgb(186, 137, 60)" }}
           >
-            {loading ? <BeatLoader color="white" /> : "Reset Password"}
+            {loading ? (
+              <IonSpinner name="lines"></IonSpinner>
+            ) : (
+              "Reset Password"
+            )}
           </Button>
         </form>
       </Container>

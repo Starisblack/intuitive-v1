@@ -7,18 +7,14 @@ import {
   IonHeader,
   IonIcon,
   IonPage,
-  IonSearchbar,
   IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../components/ExploreContainer";
 import "./Home.css";
 import { useEffect, useState } from "react";
 import {
   collection,
-  doc,
-  getDoc,
   onSnapshot,
   orderBy,
   query,
@@ -32,7 +28,7 @@ import { useAppSelector } from "../store/store";
 import { isAuth } from "../reducers/authReducers";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
-import { add, star, create } from "ionicons/icons";
+import { add} from "ionicons/icons";
 
 const Home: React.FC = () => {
   const history = useHistory();
@@ -73,7 +69,7 @@ const Home: React.FC = () => {
       setLoading(false);
     }
   }, [history, auth]);
-
+ 
   const searchInput = (e: any) => {
     let userInput = e.target.value;
     setUserInput(userInput);

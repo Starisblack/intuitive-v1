@@ -8,20 +8,13 @@ import {
   IonRow,
   IonButton,
   IonIcon,
-  IonHeader,
   IonToolbar,
-  IonTitle,
   IonButtons,
-  useIonToast,
   IonSpinner,
-  IonRefresher,
-  IonRefresherContent,
-  RefresherEventDetail,
-  useIonViewDidEnter,
 } from "@ionic/react";
 import { power } from "ionicons/icons";
 import UploadProfileImg from "../../components/UploadProfileImg";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import db from "../../firebase-config";
 import PopUp from "../../components/PopUp";
 import EditProfile from "./EditProfile/EditProfile";
@@ -37,8 +30,8 @@ interface IUser {
   isTarot?: boolean;
   profileImg?: string;
   bio?: string;
-  follower?: number;
-  following?: number;
+  follower?: any;
+  following?: any;
 }
 
 const Profile: FC = () => {
@@ -73,10 +66,11 @@ const Profile: FC = () => {
 
     const getUserDetails = async () => {
       const userRef = doc(db, "users", userDetail.uid);
-      const userSnap = await getDoc(userRef);
-      const userData: any = userSnap.data();
-      setUserData(userData);
-      setLoading(false);
+      onSnapshot(userRef, (doc) => {
+        const userData: any = doc.data();
+        setUserData(userData);
+        setLoading(false);
+      });
     };
 
     getUserDetails();
@@ -159,7 +153,6 @@ const Profile: FC = () => {
                           alt="user"
                         />
                         {showProfileImg}
-                        {/* <UploadProfileImg id={user.uid} /> */}
                       </div>
                     </div>
                     <h3 className="username">
@@ -175,7 +168,9 @@ const Profile: FC = () => {
                         <IonCol>
                           <div className="follow">
                             <h3 className="font-light">
-                              {userData?.follower ? userData?.follower : 0}
+                              {userData.follower?.length >= 1
+                                ? userData.follower?.length
+                                : 0}
                             </h3>
                             <p>Followers</p>
                           </div>
@@ -183,7 +178,9 @@ const Profile: FC = () => {
                         <IonCol>
                           <div className="follow">
                             <h3 className="font-light">
-                              {userData?.following ? userData?.following : 0}
+                              {userData.following?.length >= 1
+                                ? userData.following?.length
+                                : 0}
                             </h3>
                             <p>Following</p>
                           </div>

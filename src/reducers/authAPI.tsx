@@ -35,3 +35,4 @@ export const signUp = async (userInput: {
   });
   return user
 };
+
