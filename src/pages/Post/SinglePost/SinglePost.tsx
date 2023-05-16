@@ -26,25 +26,21 @@ import { useAppSelector } from "../../../store/store";
 import { user } from "../../../reducers/authReducers";
 // import updatePost from "../Post/UpdatePost/UpdatePost";
 
-type UserDetailPageProps={
-    id?: any;
-  }
+type UserDetailPageProps = {
+  id?: any;
+};
 
 const SinglePost: React.FC<UserDetailPageProps> = () => {
   const inputRef = useRef(null);
- const currentUser = useAppSelector(user)
+  const currentUser = useAppSelector(user);
 
-
-  const {id} = useParams<any>()
+  const { id } = useParams<any>();
 
   let history = useHistory();
-
 
   const [post, setPost] = useState<any>();
   const [edit, setEdit] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-
-  
 
   useEffect(() => {
     setLoading(true);
@@ -86,8 +82,6 @@ const SinglePost: React.FC<UserDetailPageProps> = () => {
   let showEditDelButton = null;
   let singlePost;
 
-
-
   if (post && currentUser) {
     singlePost = (
       <>
@@ -96,31 +90,31 @@ const SinglePost: React.FC<UserDetailPageProps> = () => {
         ) : (
           <VideoPlayer link={post.postMedia.videoURL} height="350px" />
         )}
-     
-      <div className="post-content-container">
-        <h1
-          id="title"
-          style={edit ? editableStyling : {}}
-          contentEditable={edit}
-          suppressContentEditableWarning={true}
-          ref={inputRef}
-        >
-          {post.title}
-        </h1>
-        <p
-          id="content"
-          style={edit ? editableStyling : {}}
-          contentEditable={edit}
-          suppressContentEditableWarning={true}
-        >
-          {post.content}{" "}
-        </p>
+
+        <div className="post-content-container">
+          <h1
+            id="title"
+            style={edit ? editableStyling : {}}
+            contentEditable={edit}
+            suppressContentEditableWarning={true}
+            ref={inputRef}
+          >
+            {post.title}
+          </h1>
+          <p
+            id="content"
+            style={edit ? editableStyling : {}}
+            contentEditable={edit}
+            suppressContentEditableWarning={true}
+          >
+            {post.content}{" "}
+          </p>
         </div>
       </>
     );
 
     if (currentUser.uid === post.createdBy) {
-        showEditDelButton = (
+      showEditDelButton = (
         <div className="del-edit-box">
           <div id="edit" onClick={editHandler}>
             <div className="edit-container">
@@ -143,48 +137,46 @@ const SinglePost: React.FC<UserDetailPageProps> = () => {
   }
 
   return (
-    <>
-      {loading ? (
-        <div
-          style={{
-            height: "100vh",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <IonSpinner name="circles"></IonSpinner>
-        </div>
-      ) : (
-        <IonPage className="singlePostPage">
-          <IonHeader collapse="fade" className="ion-no-border">
-            <IonToolbar>
-              <IonButtons slot="start">
-                <IonBackButton color="dark"></IonBackButton>
-              </IonButtons>
+    <IonPage className="singlePostPage">
+      <IonHeader collapse="fade" className="ion-no-border">
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton color="dark"></IonBackButton>
+          </IonButtons>
 
-              {edit ? (
-                <div slot="end">
-                  <IonButton
-                    style={{ fontSize: "14px" }}
-                    onClick={cancelHandler}
-                    color="danger"
-                  >
-                    Cancel
-                  </IonButton>
-                  <UpdatePost id={id} setEdit={setEdit} />
-                </div>
-              ) : <>{showEditDelButton}</>}
-            </IonToolbar>
-          </IonHeader>
-          <IonContent  fullscreen className="ion-padding">
-            <div className="post-container">
-            {singlePost}
+          {edit ? (
+            <div slot="end">
+              <IonButton
+                style={{ fontSize: "14px" }}
+                onClick={cancelHandler}
+                color="danger"
+              >
+                Cancel
+              </IonButton>
+              <UpdatePost id={id} setEdit={setEdit} />
             </div>
-          </IonContent>
-        </IonPage>
-      )}
-    </>
+          ) : (
+            <>{showEditDelButton}</>
+          )}
+        </IonToolbar>
+      </IonHeader>
+      <IonContent fullscreen className="ion-padding">
+        {loading ? (
+          <div
+            style={{
+              height: "100vh",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <IonSpinner name="circles"></IonSpinner>
+          </div>
+        ) : (
+          <div className="post-container">{singlePost}</div>
+        )}
+      </IonContent>
+    </IonPage>
   );
 };
 
