@@ -13,15 +13,18 @@ import {
 import { Toolbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./SingleUserProfileView.css";
-import { doc, getDoc } from "firebase/firestore";
+import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import db from "../../../firebase-config";
 import { useParams } from "react-router";
 import Spinner from "../../../components/Spinner";
+import { useSelector } from "react-redux";
+import { user } from "../../../reducers/authReducers";
 
 const SingleUserProfileView = () => {
   const { id } = useParams<any>();
-  const [user, setUser] = useState<any>();
+  const [userDetail, setUser] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
+  const currentUser = useSelector(user);
 
   useEffect(() => {
     setLoading(true);
@@ -36,6 +39,47 @@ const SingleUserProfileView = () => {
     getUserDetails();
     setLoading(true);
   }, [id]);
+
+  const followHandler = async (id: string) => {
+   
+
+    try {
+      // func to check if the user as document
+      const userRef = doc(db, "user", currentUser.uid);
+      const docSnap = await getDoc(userRef);
+
+
+      await updateDoc(doc(db, "users", currentUser.uid), {
+        following: arrayUnion({
+          id: userDetail.id,
+        }),
+      });
+
+      await updateDoc(doc(db, "users", userDetail.id), {
+        followers: arrayUnion({
+          id: currentUser.id,
+        }),
+      });
+
+      // if (docSnap.exists()) {
+    
+      // } else {
+        // await setDoc(doc(db, "users", currentUser.uid), {
+        //   following: arrayUnion({
+        //     id: userDetail.id,
+        //   }),
+        // });
+
+        // await setDoc(doc(db, "users", userDetail.id), {
+        //   followers: arrayUnion({
+        //     id: currentUser.id,
+        //   }),
+        // });
+      // }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <IonPage className="single-user-profile-page">
@@ -68,7 +112,9 @@ const SingleUserProfileView = () => {
                       />
                     </div>
                   </div>
-                  <h3 className="username">{user?.fName + " " + user?.lName}</h3>
+                  <h3 className="username">
+                    {userDetail?.fName + " " + userDetail?.lName}
+                  </h3>
 
                   <IonGrid>
                     <IonRow>
@@ -87,8 +133,13 @@ const SingleUserProfileView = () => {
                     </IonRow>
                   </IonGrid>
 
-                  <IonButton style={{margin: "10px"}}>Message</IonButton>
-                  <IonButton style={{margin: "10px"}} >Follow</IonButton>
+                  <IonButton style={{ margin: "10px" }}>Message</IonButton>
+                  <IonButton
+                    onClick={() => followHandler(userDetail.id)}
+                    style={{ margin: "10px" }}
+                  >
+                    Follow
+                  </IonButton>
                 </div>
               </div>
             </div>

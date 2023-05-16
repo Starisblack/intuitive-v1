@@ -12,6 +12,7 @@ type UserListCardProps = {
   data: any;
 };
 const UserListCard: FC<UserListCardProps> = ({ data }) => {
+
   return (
     <>
       {data && (
@@ -27,7 +28,7 @@ const UserListCard: FC<UserListCardProps> = ({ data }) => {
           {data?.map((user: any) => {
             return (
               <>
-               <Link className="user-link" to={"/user/" + user.id} key={user.id}>
+               <Link key={user.id} className="user-link" to={"/user/" + user.id} >
                 <ListItem  alignItems="flex-start">
                   <ListItemAvatar>
                     <Avatar alt="Remy Sharp" src={user?.profileImg} />

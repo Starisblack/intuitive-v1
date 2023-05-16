@@ -3,7 +3,7 @@
 }
 
 .single-user-profile-page ion-content::part(background) {
-    background: rgb(237, 239, 242) ;
+    background: rgb(237, 239, 242) !important;
   }
 
 

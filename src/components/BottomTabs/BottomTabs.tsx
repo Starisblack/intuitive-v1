@@ -8,6 +8,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import { useHistory, useLocation } from "react-router";
 import { useAppSelector } from "../../store/store";
 import { isAuth } from "../../reducers/authReducers";
+import "./BottomTabs.css"
 
 export default function LabelBottomNavigation() {
   const location = useLocation();

@@ -177,8 +177,10 @@ const SinglePost: React.FC<UserDetailPageProps> = () => {
               ) : <>{showEditDelButton}</>}
             </IonToolbar>
           </IonHeader>
-          <IonContent  scrollEvents={true} fullscreen className="ion-padding">
+          <IonContent  fullscreen className="ion-padding">
+            <div className="post-container">
             {singlePost}
+            </div>
           </IonContent>
         </IonPage>
       )}

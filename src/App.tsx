@@ -29,6 +29,7 @@ import Profile from './pages/Profile/Profile';
 import SinglePost from './pages/Post/SinglePost/SinglePost';
 import SingleUserProfileView from './pages/Users/SingleUserProfileView/SingleUserProfileView';
 import Register from './pages/Auth/Register/Register';
+import CreatePost from './pages/Post/CreatePost/CreatePost';
 
 setupIonicReact();
 
@@ -66,8 +67,18 @@ const App: React.FC = () => (
           <SingleUserProfileView />
         </Route>
 
+        <Route exact path="/create-post">
+          <CreatePost />
+        </Route>
+        
+
+
+      
+
       </IonRouterOutlet>
+
       <BottomTabs />
+     
     </IonReactRouter>
 
  

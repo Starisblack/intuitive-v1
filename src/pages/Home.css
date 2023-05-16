@@ -1,5 +1,5 @@
 .home-page{
-    --ion-background-color:rgb(237, 239, 242);
+        --padding-bottom: 100px;
 }
 .home-content-container{
 padding: 5% ;

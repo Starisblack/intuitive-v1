@@ -5,8 +5,15 @@
   color: black;
 }
 
+.post-container {
+  padding-bottom: 80px;
+  width: 600px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
 .singlePostPage {
-    --ion-background-color: rgb(254, 238, 221)
+  --ion-background-color: rgb(254, 238, 221);
 }
 
 .singlePostPage ion-icon {
@@ -19,6 +26,10 @@
 
 .singlePostPage .ion-color-danger {
   font-size: 20px;
+}
+
+#content {
+  line-height: 1.2;
 }
 
 .del-edit-box {
@@ -41,12 +52,6 @@
   flex-direction: column;
   padding: 6% 0;
 }
-
-.post-content-container{
-  padding: 0 5%;
-}
-
-
 
 .singlePage-container ion-img {
   height: 350px;
@@ -71,8 +76,6 @@
   margin-right: 20px;
 }
 
-
-
 .hide {
   display: none;
 }
@@ -82,7 +85,11 @@
 }
 
 @media (max-width: 769px) {
-   .singlePage-container{
-     padding-top: 0;
-   }
+  .singlePage-container {
+    padding-top: 0;
+  }
+
+  .post-content-container {
+    padding: 0 5%;
+  }
 }

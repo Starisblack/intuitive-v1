@@ -1,0 +1,25 @@
+.create-post-content{
+         padding-top: 10%;
+         width: 444px;
+         max-width: 100%;
+         margin: 0 auto;
+         display: flex;
+         flex-direction: column;
+}
+
+.create-post-content ion-button {
+    margin-top: 1.5rem;
+}
+
+.item .item-native {
+    padding-inline-start: 0  !important;
+
+}
+
+@media (max-width: 769px)  {
+     .create-post-content{
+        padding-left: 5%;
+        padding-right: 5%;
+     }
+}
+

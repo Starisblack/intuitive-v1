@@ -1,7 +1,11 @@
 import {
   IonButton,
+  IonButtons,
   IonContent,
+  IonFab,
+  IonFabButton,
   IonHeader,
+  IonIcon,
   IonPage,
   IonSearchbar,
   IonSpinner,
@@ -27,23 +31,26 @@ import Spinner from "../components/Spinner";
 import { useAppSelector } from "../store/store";
 import { isAuth } from "../reducers/authReducers";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
+import { add, star, create } from "ionicons/icons";
 
 const Home: React.FC = () => {
-  const history = useHistory()
+  const history = useHistory();
   const [posts, setPosts] = useState<any>([]);
   const [userInput, setUserInput] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
-  const auth = useAppSelector(isAuth)
+  const auth = useAppSelector(isAuth);
 
-  console.log(auth)
 
   useEffect(() => {
-
-    if(!auth){
-      history.push("/login")
-    }
     window.scrollTo(0, 0);
-    setLoading(true)
+  
+    if (!auth) {
+      history.push("/login");
+    }
+
+    setLoading(true);
+   
 
     try {
       const getAllPosts = () => {
@@ -65,7 +72,7 @@ const Home: React.FC = () => {
       console.log(error);
       setLoading(false);
     }
-  }, [history]);
+  }, [history, auth]);
 
   const searchInput = (e: any) => {
     let userInput = e.target.value;
@@ -83,14 +90,24 @@ const Home: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Home</IonTitle>
-        </IonToolbar>
+      <IonToolbar className="ion-padding">
+        
+        <IonButtons slot="primary">
+        <Link to="/create-post">
+          <IonButton fill="outline">
+             Create Post
+            <IonIcon slot="end" icon={add}></IonIcon>
+          </IonButton>
+          </Link>
+        </IonButtons>
+        
+        <IonTitle>Home</IonTitle>
+      </IonToolbar>
       </IonHeader>
       {loading ? (
         <Spinner />
       ) : (
-        <IonContent fullscreen>
+        <IonContent fullscreen className="home-page">
           <div className="home-content-container">
             <SearchBar onChange={searchInput} />
             <div style={{ marginTop: "30px" }}>
@@ -99,6 +116,14 @@ const Home: React.FC = () => {
           </div>
         </IonContent>
       )}
+
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <Link to="/create-post">
+          <IonFabButton>
+            <IonIcon icon={add}></IonIcon>
+          </IonFabButton>
+        </Link>
+      </IonFab>
     </IonPage>
   );
 };

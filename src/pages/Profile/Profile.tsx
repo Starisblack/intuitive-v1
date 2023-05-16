@@ -81,7 +81,7 @@ const Profile: FC = () => {
 
     getUserDetails();
     setLoading(true);
-  }, []);
+  }, [history, userDetail]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -167,7 +167,7 @@ const Profile: FC = () => {
                     </h3>
                     <p className="bio">
                       {userData?.bio
-                        ? userData.bio
+                        ? userData?.bio
                         : "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown"}
                     </p>{" "}
                     <IonGrid>
@@ -175,7 +175,7 @@ const Profile: FC = () => {
                         <IonCol>
                           <div className="follow">
                             <h3 className="font-light">
-                              {userData?.follower ? userData.follower : 0}
+                              {userData?.follower ? userData?.follower : 0}
                             </h3>
                             <p>Followers</p>
                           </div>
@@ -183,7 +183,7 @@ const Profile: FC = () => {
                         <IonCol>
                           <div className="follow">
                             <h3 className="font-light">
-                              {userData?.following ? userData.following : 0}
+                              {userData?.following ? userData?.following : 0}
                             </h3>
                             <p>Following</p>
                           </div>
@@ -205,4 +205,4 @@ const Profile: FC = () => {
   );
 };
 
-export default React.memo(Profile);
+export default Profile;

@@ -49,17 +49,17 @@ const Login: FC = () => {
   useEffect(() => {
     if (auth) {
       history.push("/home");
+      reset()
     } else {
       setTimeout(() => {
         dispatch(clearError());
       }, 3000);
     }
-  }, [auth]);
+  }, [auth, reset, history, dispatch]);
 
   //login in user and validate
   const onSubmitHandler: SubmitHandler<Inputs> = async (userInput) => {
     await dispatch(loginAsync(userInput));
-    reset();
   };
 
   return (
@@ -113,7 +113,7 @@ const Login: FC = () => {
                   variant="contained"
                   sx={{ mt: 3, mb: 2, bgcolor: "rgb(186, 137, 60)" }}
                 >
-                  {loading ? <IonSpinner></IonSpinner> : "Login"}
+                  {loading ? <IonSpinner  color="light"></IonSpinner> : "Login"}
                 </Button>
                 <Grid container>
                   <Grid item>
