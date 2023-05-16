@@ -10,6 +10,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import "./Home.css";
 import { useEffect, useState } from "react";
@@ -81,6 +82,10 @@ const Home: React.FC = () => {
     );
   };
 
+  useIonViewWillEnter(()=> console.log("home will"))
+
+   
+
   if (!posts) return <IonSpinner name="circles"></IonSpinner>;
 
   return (
@@ -112,14 +117,6 @@ const Home: React.FC = () => {
           </div>
         </IonContent>
       )}
-
-      <IonFab vertical="bottom" horizontal="end" slot="fixed">
-        <Link to="/create-post">
-          <IonFabButton>
-            <IonIcon icon={add}></IonIcon>
-          </IonFabButton>
-        </Link>
-      </IonFab>
     </IonPage>
   );
 };

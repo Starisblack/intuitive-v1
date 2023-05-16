@@ -1,93 +1,91 @@
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import { Redirect, Route } from "react-router-dom";
+import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
+import { IonReactRouter } from "@ionic/react-router";
+import Home from "./pages/Home";
 
 /* Core CSS required for Ionic components to work properly */
-import '@ionic/react/css/core.css';
+import "@ionic/react/css/core.css";
 
 /* Basic CSS for apps built with Ionic */
-import '@ionic/react/css/normalize.css';
-import '@ionic/react/css/structure.css';
-import '@ionic/react/css/typography.css';
+import "@ionic/react/css/normalize.css";
+import "@ionic/react/css/structure.css";
+import "@ionic/react/css/typography.css";
 
 /* Optional CSS utils that can be commented out */
-import '@ionic/react/css/padding.css';
-import '@ionic/react/css/float-elements.css';
-import '@ionic/react/css/text-alignment.css';
-import '@ionic/react/css/text-transformation.css';
-import '@ionic/react/css/flex-utils.css';
-import '@ionic/react/css/display.css';
+import "@ionic/react/css/padding.css";
+import "@ionic/react/css/float-elements.css";
+import "@ionic/react/css/text-alignment.css";
+import "@ionic/react/css/text-transformation.css";
+import "@ionic/react/css/flex-utils.css";
+import "@ionic/react/css/display.css";
 
 /* Theme variables */
-import './theme/variables.css';
-import Login from './pages/Auth/Login/Login';
-import BottomTabs from './components/BottomTabs/BottomTabs';
-import Chat from './pages/Chat/Chat';
-import Users from './pages/Users/Users';
-import Profile from './pages/Profile/Profile';
-import SinglePost from './pages/Post/SinglePost/SinglePost';
-import SingleUserProfileView from './pages/Users/SingleUserProfileView/SingleUserProfileView';
-import Register from './pages/Auth/Register/Register';
-import CreatePost from './pages/Post/CreatePost/CreatePost';
-import ForgotPassword from './pages/Auth/ForgotPassword/ForgotPassword';
+import "./theme/variables.css";
+import Login from "./pages/Auth/Login/Login";
+import BottomTabs from "./components/BottomTabs/BottomTabs";
+import Chat from "./pages/Chat/Chat";
+import Users from "./pages/Users/Users";
+// import Profile from "./pages/Profile/Profile";
+// import SinglePost from "./pages/Post/SinglePost/SinglePost";
+import SingleUserProfileView from "./pages/Users/SingleUserProfileView/SingleUserProfileView";
+import Register from "./pages/Auth/Register/Register";
+import CreatePost from "./pages/Post/CreatePost/CreatePost";
+import ForgotPassword from "./pages/Auth/ForgotPassword/ForgotPassword";
+import { Suspense, lazy } from "react";
+import Spinner from "./components/Spinner";
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <div>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
+const App: React.FC = () => {
+  const Profile = lazy(() => import("./pages/Profile/Profile"));
 
-        <Route exact path="/login">
-          <Login />
-        </Route>
-        <Route exact path="/register">
-          <Register />
-        </Route>
-        <Route exact path="/forgotpassword">
-          <ForgotPassword />
-        </Route>
-        <Route exact path="/chat">
-          <Chat />
-        </Route>
-        <Route exact path="/users">
-          <Users />
-        </Route>
-        <Route exact path="/profile">
-          <Profile />
-        </Route>
-        {/* <Route exact path="/post/:id">
-          <SinglePost />
-        </Route> */}
-        <Route exact path="/user/:id">
-          <SingleUserProfileView />
-        </Route>
+  return (
+    <IonApp>
+      <div>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route exact path="/home">
+              <Home />
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/home" />
+            </Route>
 
-        <Route exact path="/create-post">
-          <CreatePost />
-        </Route>
-        
+            <Route exact path="/login">
+              <Login />
+            </Route>
+            <Route exact path="/register">
+              <Register />
+            </Route>
+            <Route exact path="/forgotpassword">
+              <ForgotPassword />
+            </Route>
+            <Route exact path="/chat">
+              <Chat />
+            </Route>
+            <Route exact path="/users">
+              <Users />
+            </Route>
+            <Route exact path="/profile">
+              <Suspense fallback={<Spinner />}>
+                <Profile />
+              </Suspense>
+            </Route>
 
+            <Route exact path="/user/:id">
+              <SingleUserProfileView />
+            </Route>
 
-      
+            <Route exact path="/create-post">
+              <CreatePost />
+            </Route>
+          </IonRouterOutlet>
 
-      </IonRouterOutlet>
-
-      <BottomTabs />
-     
-    </IonReactRouter>
-
- 
-    </div>
-  </IonApp>
-);
+          <BottomTabs />
+        </IonReactRouter>
+      </div>
+    </IonApp>
+  );
+};
 
 export default App;

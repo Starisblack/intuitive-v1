@@ -5,6 +5,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import "./Users.css";
 import UserListCard from "./UserListCard/UserListCard";
@@ -56,6 +57,7 @@ const Users: React.FC = () => {
     }
   }, [currentUser]);
 
+  useIonViewWillEnter(()=> console.log("user"))
 
   const searchInput = (e: any) => {
     let userInput = e.target.value;

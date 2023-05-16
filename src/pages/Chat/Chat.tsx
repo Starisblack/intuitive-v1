@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import './Chat.css';
 import { useAppDispatch } from '../../store/store';
 import { useHistory } from 'react-router';
@@ -6,6 +6,8 @@ import { logoutAsync } from '../../reducers/authReducers';
 
 const Chat: React.FC = () => {
 
+  
+  useIonViewWillEnter(()=> console.log("chat"))
 // const dispatch = useAppDispatch()
 const history = useHistory();
 
