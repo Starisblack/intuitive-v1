@@ -76,23 +76,25 @@ const SingleUserProfileView = () => {
     }
   }
 
+
  
 
-  const followHandler = async (id: string) => {
+  const followHandler = async (id: string) => { 
     setFollowLoading(true);
     try {
       //  func to update user followers and those who are following
-      updateDoc(doc(db, "users", currentUser.uid), {
+      updateDoc(doc(db, "users", currentUser.id), {
         following: arrayUnion(userDetail.id),
       }).then(() => {
         updateDoc(doc(db, "users", id), {
-          followers: arrayUnion(currentUser.uid),
+          followers: arrayUnion(currentUser.id),
         }).then((res) => {
           setFollowLoading(false);
           presentToast("Following", 1500, "top");
         });
       });
     } catch (err) {
+      setLoading(false)
       console.log(err);
     }
   };
@@ -101,11 +103,11 @@ const SingleUserProfileView = () => {
     setFollowLoading(true);
     try {
       //  func to update user followers and those who are following
-      updateDoc(doc(db, "users", currentUser.uid), {
+      updateDoc(doc(db, "users", currentUser.id), {
         following: arrayRemove(id),
       }).then(() => {
         updateDoc(doc(db, "users", id), {
-          followers: arrayRemove(currentUser.uid),
+          followers: arrayRemove(currentUser.id),
         }).then((res) => {
           setFollowLoading(false);
           presentToast("success", 1500, "top");
@@ -186,7 +188,7 @@ const SingleUserProfileView = () => {
 
                   <IonButton style={{ margin: "10px" }}>Message</IonButton>
 
-                  {userDetail?.followers?.includes(currentUser.uid) ? (
+                  {userDetail?.followers?.includes(currentUser.id) ? (
                     <IonButton
                       onClick={() => unFollowHandler(userDetail.id)}
                       style={{ margin: "10px" }}
