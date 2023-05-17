@@ -124,7 +124,7 @@
     text-align: center !important
 }
 
-.profile-content ion-button{
+.little-profile ion-button{
     --background: rgb(186, 137, 60);
     margin-top: 20px;
 }

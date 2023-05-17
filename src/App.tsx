@@ -22,7 +22,6 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import Login from "./pages/Auth/Login/Login";
-import BottomTabs from "./components/BottomTabs/BottomTabs";
 import Chat from "./pages/Chat/Chat";
 import Users from "./pages/Users/Users";
 import Profile from "./pages/Profile/Profile";
@@ -121,7 +120,6 @@ const App: React.FC = () => {
           {navTabs}
           </IonTabs>
           
-          {/* <BottomTabs /> */}
         </IonReactRouter>
       
     </IonApp>

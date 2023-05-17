@@ -29,16 +29,16 @@ const Users: React.FC = () => {
   const [userInput, setUserInput] = useState("");
 
 
-
   useEffect(() => {
     window.scrollTo(0, 0);
-    setLoading(true);
+  
 
     try {
       const getAllUsers = () => {
+        setLoading(true);
         const q = query(
           collection(db, "users"),
-          where("id", "!=", currentUser.uid)
+          where("id", "!=", currentUser.id)
         );
 
         onSnapshot(q, (querySnapshot) => {
@@ -77,7 +77,7 @@ const Users: React.FC = () => {
   };
 
 
-if(!users) return null
+// if(!users) return null
  
 
   return (

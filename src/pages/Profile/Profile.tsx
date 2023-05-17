@@ -11,14 +11,16 @@ import {
   IonToolbar,
   IonButtons,
   IonSpinner,
-  useIonViewWillEnter,
+  IonCard,
+  IonCardHeader,
+  IonCardContent,
+  IonCardTitle,
 } from "@ionic/react";
 import { power } from "ionicons/icons";
 import UploadProfileImg from "../../components/UploadProfileImg";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import db from "../../firebase-config";
 import PopUp from "../../components/PopUp";
-import EditProfile from "./EditProfile/EditProfile";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { logoutAsync } from "../../reducers/authReducers";
 import { useHistory } from "react-router";
@@ -31,7 +33,7 @@ interface IUser {
   isTarot?: boolean;
   profileImg?: string;
   bio?: string;
-  follower?: any;
+  followers?: any;
   following?: any;
 }
 
@@ -49,35 +51,55 @@ const Profile: FC = () => {
     isTarot: false,
     profileImg: "",
     bio: "",
-    follower: 0,
+    followers: 0,
     following: 0,
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
- 
+  const [userPosts, setUserPosts] = useState<any>([]);
 
   const signOutHandler = async () => {
     await dispatch(logoutAsync());
-    history.push("/login");
   };
 
   useEffect(() => {
     if (!userDetail) {
       history.push("/login");
     }
-    setLoading(true);
+    // setLoading(true);
 
-    const getUserDetails = async () => {
-     
-      const userRef = doc(db, "users", userDetail.uid);
-      onSnapshot(userRef, (doc) => {
-        const userData: any = doc.data();
-        setUserData(userData);
-        setLoading(false);
-      });
-    };
+    try {
+      const getUserDetails = async () => {
+        const userRef = doc(db, "users", userDetail.id);
+        onSnapshot(userRef, (doc) => {
+          const userData: any = doc.data();
+          setUserData(userData);
+        });
+      };
 
-    getUserDetails();
+      const getUserPosts = () => {
+        const q = query(
+          collection(db, "posts"),
+          where("createdBy", "==", userDetail?.id)
+        );
+
+        onSnapshot(q, (querySnapshot) => {
+          setUserPosts(
+            querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }))
+          );
+
+          setLoading(false);
+        });
+      };
+
+      getUserDetails();
+      getUserPosts();
+    } catch (error) {
+      console.log(error);
+    }
   }, [history, userDetail]);
 
   const handleClickOpen = () => {
@@ -88,18 +110,15 @@ const Profile: FC = () => {
     setOpen(false);
   };
 
-
-  
-
   let showProfileImg = null;
   let showPopUp = null;
 
   if (userDetail) {
-    showProfileImg = <UploadProfileImg id={userDetail.uid} />;
+    showProfileImg = <UploadProfileImg id={userDetail.id} fileURL={userDetail?.profileImg} />;
     showPopUp = (
       <PopUp
         openPopUp={open}
-        id={userDetail.uid}
+        id={userDetail.id}
         userDetail={userData}
         handleClose={handleClose}
       />
@@ -127,14 +146,14 @@ const Profile: FC = () => {
         {loading ? (
           <div
             style={{
-              height: "100vh",
+              height: "70vh",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
             {" "}
-            <IonSpinner name="lines"></IonSpinner>{" "}
+            <IonSpinner color="light" name="lines"></IonSpinner>{" "}
           </div>
         ) : (
           <div className="profile-content">
@@ -152,7 +171,7 @@ const Profile: FC = () => {
                       <img
                         src={
                           userData?.profileImg
-                            ? userData.profileImg
+                            ? userData?.profileImg
                             : "https://ionicframework.com/docs/img/demos/card-media.png"
                         }
                         alt="user"
@@ -173,8 +192,8 @@ const Profile: FC = () => {
                       <IonCol>
                         <div className="follow">
                           <h3 className="font-light">
-                            {userData.follower?.length >= 1
-                              ? userData.follower?.length
+                            {userData?.followers?.length >= 1
+                              ? userData?.followers?.length
                               : 0}
                           </h3>
                           <p>Followers</p>
@@ -183,8 +202,8 @@ const Profile: FC = () => {
                       <IonCol>
                         <div className="follow">
                           <h3 className="font-light">
-                            {userData.following?.length >= 1
-                              ? userData.following?.length
+                            {userData?.following?.length >= 1
+                              ? userData?.following?.length
                               : 0}
                           </h3>
                           <p>Following</p>
@@ -194,6 +213,48 @@ const Profile: FC = () => {
                   </IonGrid>
                   {showPopUp}
                   <IonButton onClick={handleClickOpen}>Edit Profile</IonButton>
+                </div>
+              </div>
+              <div style={{ padding: "5%", backgroundColor: "white" }}>
+                <h1>Your Posts</h1>
+                <div style={{ marginTop: "2rem" }}>
+                  {userPosts?.length >= 1 ? (
+                    <IonGrid>
+                      <IonRow>
+                        {userPosts?.map((post: any) => {
+                          return (
+                            <IonCol
+                              key={post?.id}
+                              size="12"
+                              size-sm="6"
+                              size-lg="4"
+                            >
+                              <IonCard color="light">
+                                <IonCardHeader>
+                                  <IonCardTitle>{post?.title}</IonCardTitle>
+                                </IonCardHeader>
+
+                                <IonCardContent>{post?.content}</IonCardContent>
+
+                                <IonButton
+                                  href={"/post/" + post?.id}
+                                  fill="clear"
+                                >
+                                  View Post
+                                </IonButton>
+                              </IonCard>
+                            </IonCol>
+                          );
+                        })}
+                      </IonRow>
+                    </IonGrid>
+                  ) : (
+                    <div>
+                      {" "}
+                      <h1>You have no Post</h1>
+                      <IonButton>Add Post</IonButton>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

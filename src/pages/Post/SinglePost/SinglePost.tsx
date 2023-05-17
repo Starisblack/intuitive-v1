@@ -164,7 +164,7 @@ const SinglePost: React.FC<UserDetailPageProps> = () => {
         {loading ? (
           <div
             style={{
-              height: "100vh",
+              height: "70vh",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",

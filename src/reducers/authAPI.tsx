@@ -4,16 +4,29 @@ import {
   signOut,
 } from "firebase/auth";
 import db, { auth } from "../firebase-config";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export const signUserOut = () => {
   return signOut(auth);
 };
 
-export const login = (userInput: { email: any; password: any }) => {
+export const login = async (userInput: { email: any; password: any }) => {
   const { email, password } = userInput;
-  return signInWithEmailAndPassword(auth, email, password);
+
+  const userData: any = await signInWithEmailAndPassword(auth, email, password);
+
+  const { uid } = userData.user;
+  const userRef = doc(db, "users", uid);
+   const docSnap = await getDoc(userRef);
+
+  return docSnap.data();
 };
+
+// const userRef = doc(db, "users", user.uid);
+// onSnapshot(userRef, (doc) => {
+//   const userData: any = doc.data();
+
+// })
 
 export const signUp = async (userInput: {
   email: any;
@@ -21,8 +34,6 @@ export const signUp = async (userInput: {
   fName: any;
   lName: any;
 }) => {
-
-
   const { email, password, fName, lName } = userInput;
   const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -33,6 +44,5 @@ export const signUp = async (userInput: {
     isTarot: false,
     email: user.email,
   });
-  return user
+  return user;
 };
-

@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { signUserOut, login, signUp } from "./authAPI";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import db from "../firebase-config";
 
 type AuthState = {
   id: string;
@@ -19,10 +21,11 @@ const initialState: AuthState = {
 
 export const loginAsync = createAsyncThunk(
   "auth/login",
-  async (userInput: any, { dispatch, rejectWithValue }) => {
+  async (userInput: any, {rejectWithValue }) => {
     try {
-      const user = await login(userInput);
-      return user.user;
+      const userData = await login(userInput);  
+       return userData;
+    
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -34,7 +37,7 @@ export const signUpAsync = createAsyncThunk(
   async (userInput: any, { dispatch, rejectWithValue }) => {
     try {
       const user = await signUp(userInput);
-      console.log(user)
+      console.log(user);
       return user;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -59,22 +62,30 @@ export const authSlice = createSlice({
   initialState,
 
   reducers: {
+    authSuccess: (state, action) => {
+      state.user = action.payload
+      state.loading = false;
+      state.isAuth = true
+    },
+
     logout: (state) => {
       state.isAuth = false;
       state.user = null;
     },
     setError: (state, action) => {
-      state.error = action.payload
+      state.error = action.payload;
     },
 
     clearError: (state) => {
-      state.error = null
-    }
+      state.error = null;
+    },
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(loginAsync.pending, (state) => { state.loading = true})
+      .addCase(loginAsync.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(loginAsync.fulfilled, (state: any, action: any) => {
         state.loading = false;
         state.user = { ...action.payload };
@@ -83,14 +94,15 @@ export const authSlice = createSlice({
       .addCase(loginAsync.rejected, (state, action) => {
         state.isAuth = false;
         state.error = action.payload;
-        state.loading = false
+        state.loading = false;
       })
-      .addCase(signUpAsync.pending, (state) => { state.loading = true})
+      .addCase(signUpAsync.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(signUpAsync.fulfilled, (state: any, action: any) => {
         state.loading = false;
         state.isAuth = true;
-        state.user = action.payload
-      
+        state.user = action.payload;
       })
       .addCase(signUpAsync.rejected, (state, action) => {
         state.isAuth = false;
@@ -114,11 +126,10 @@ export const authSlice = createSlice({
 
 // trackUserAuth
 
-export const { logout, setError, clearError } = authSlice.actions;
+export const { logout, setError, clearError, authSuccess } = authSlice.actions;
 export const isAuth = (state: any) => state.auth.isAuth;
 export const user = (state: any) => state.auth.user;
 export const error = (state: any) => state.auth.error;
 export const loadingStatus = (state: any) => state.auth.loading;
-
 
 export default authSlice.reducer;

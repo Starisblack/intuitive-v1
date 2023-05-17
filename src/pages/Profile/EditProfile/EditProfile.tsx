@@ -48,9 +48,9 @@ const EditProfile: FC<EditProfileProps> = ({ handleClose, id, userDetail, setLoa
           lName,
           bio,
         });
-        setLoading(false);
         handleClose()
-        window.location.reload()
+        setLoading(false);
+        
       } catch (err: any) {
         setError(err);
         setLoading(false);

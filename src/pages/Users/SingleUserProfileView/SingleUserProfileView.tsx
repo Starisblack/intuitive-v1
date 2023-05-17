@@ -17,7 +17,6 @@ import {
   arrayRemove,
   arrayUnion,
   doc,
-  getDoc,
   onSnapshot,
   updateDoc,
 } from "firebase/firestore";
@@ -27,14 +26,16 @@ import Spinner from "../../../components/Spinner";
 import { useSelector } from "react-redux";
 import { user } from "../../../reducers/authReducers";
 import Toast from "../../../components/Toast/Toast";
+import defaultImg from "../../../assets/card-media.png";
 
 const SingleUserProfileView = () => {
   const { id } = useParams<any>();
   const [userDetail, setUser] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [followLoading, setFollowLoading] = useState<boolean>(false);
+  const [imageExist, setImageExist] = useState<boolean>(false);
   const currentUser = useSelector(user);
-  const  presentToast  = Toast();
+  const presentToast = Toast();
 
   useEffect(() => {
     setLoading(true);
@@ -44,6 +45,13 @@ const SingleUserProfileView = () => {
       onSnapshot(userRef, (doc) => {
         const userData: any = doc.data();
         setUser(userData);
+        checkIfImageExists(userData.profileImg, (exists: any) => {
+          if (exists) {
+            setImageExist(true)
+          } else {
+           setImageExist(false)
+          }
+        })
       });
       setLoading(false);
     };
@@ -51,8 +59,27 @@ const SingleUserProfileView = () => {
     getUserDetails();
   }, [id]);
 
+  function checkIfImageExists(url:any, callback: any) {
+    const img = new Image();
+    img.src = url;
+
+    if (img.complete) {
+      callback(true);
+    } else {
+      img.onload = () => {
+        callback(true);
+      };
+      
+      img.onerror = () => {
+        callback(false);
+      };
+    }
+  }
+
+ 
+
   const followHandler = async (id: string) => {
-    setFollowLoading(true)
+    setFollowLoading(true);
     try {
       //  func to update user followers and those who are following
       updateDoc(doc(db, "users", currentUser.uid), {
@@ -61,8 +88,8 @@ const SingleUserProfileView = () => {
         updateDoc(doc(db, "users", id), {
           followers: arrayUnion(currentUser.uid),
         }).then((res) => {
-          setFollowLoading(false)
-          presentToast("Following", 1500 , "top" )
+          setFollowLoading(false);
+          presentToast("Following", 1500, "top");
         });
       });
     } catch (err) {
@@ -71,7 +98,7 @@ const SingleUserProfileView = () => {
   };
 
   const unFollowHandler = async (id: string) => {
-    setFollowLoading(true)
+    setFollowLoading(true);
     try {
       //  func to update user followers and those who are following
       updateDoc(doc(db, "users", currentUser.uid), {
@@ -80,8 +107,8 @@ const SingleUserProfileView = () => {
         updateDoc(doc(db, "users", id), {
           followers: arrayRemove(currentUser.uid),
         }).then((res) => {
-         setFollowLoading(false)
-         presentToast("success", 1500 , "top" )
+          setFollowLoading(false);
+          presentToast("success", 1500, "top");
         });
       });
     } catch (err) {
@@ -115,7 +142,11 @@ const SingleUserProfileView = () => {
                       }}
                     >
                       <img
-                        src="https://ionicframework.com/docs/img/demos/card-media.png"
+                        src={
+                          imageExist
+                            ? userDetail?.profileImg
+                            : defaultImg
+                        }
                         alt="user"
                       />
                     </div>
