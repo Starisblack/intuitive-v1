@@ -33,6 +33,7 @@ import ForgotPassword from "./pages/Auth/ForgotPassword/ForgotPassword";
 import { useAppSelector } from "./store/store";
 import { isAuth } from "./reducers/authReducers";
 import { people, home, chatbubbles, person } from "ionicons/icons";
+import ChatScreeen from "./pages/Chat/ChatScreeen/ChatScreeen";
 
 setupIonicReact();
 
@@ -97,6 +98,9 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/chat">
               <Chat />
+            </Route>
+            <Route exact path="/chat-screen">
+              <ChatScreeen />
             </Route>
             <Route exact path="/users">
               <Users />

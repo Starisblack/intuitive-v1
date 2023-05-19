@@ -24,7 +24,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import db from "../../../firebase-config";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import Spinner from "../../../components/Spinner";
 import { useSelector } from "react-redux";
 import { user } from "../../../reducers/authReducers";
@@ -39,6 +39,7 @@ const SingleUserProfileView = () => {
   const [imageExist, setImageExist] = useState<boolean>(false);
   const currentUser = useSelector(user);
   const presentToast = Toast();
+  const history = useHistory()
 
   useEffect(() => {
     setLoading(true);
@@ -122,7 +123,7 @@ const SingleUserProfileView = () => {
   };
 
   const messageHandler = async () => {
-    console.log({currentUser: currentUser.id, userDetail: userDetail.id})
+    console.log({currentUser: currentUser, userDetail: userDetail})
     // check whwther the chat collection in firestore exists, if not then create a new one
     const combinedId =
       currentUser.id > userDetail.id
@@ -140,7 +141,7 @@ const SingleUserProfileView = () => {
           [combinedId + ".userInfo"]: {
             uid: userDetail.id,
             displayName: userDetail.fName,
-            profileImg: userDetail.profileImg,
+            profileImg: userDetail.profileImg ? userDetail.profileImg : "",
           },
           [combinedId + ".date"]: serverTimestamp(), 
         });
@@ -148,11 +149,12 @@ const SingleUserProfileView = () => {
           [combinedId + ".userInfo"]: {
             uid: currentUser.id,
             displayName: currentUser.fName,
-            profileImg: currentUser.profileImg,
+            profileImg: currentUser.profileImg ? currentUser.profileImg : "",
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
-      }
+      } 
+      history.push("/chat")
     } catch (err) {
       console.log(err);
     }

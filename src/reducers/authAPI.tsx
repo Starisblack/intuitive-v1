@@ -37,13 +37,14 @@ export const signUp = async (userInput: {
   const { email, password, fName, lName } = userInput;
   const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
-  setDoc(doc(db, "users", user.uid), {
+ await setDoc(doc(db, "users", user.uid), {
     id: user.uid,
     fName,
     lName,
     isTarot: false,
     email: user.email,
   });
+
   await setDoc(doc(db, "userChats", user.uid), {});
   return user;
 };
