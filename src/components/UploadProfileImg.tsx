@@ -36,7 +36,7 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
   const uploadProfileImg = async (file: any) => {
     setLoading(true)
 
-    await deleteObject(desertRef);
+    // await deleteObject(desertRef);
 
     const storage = getStorage(app);
     const storageRef = ref(storage, "profile/" + file.name);

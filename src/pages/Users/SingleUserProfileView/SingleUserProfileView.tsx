@@ -136,10 +136,11 @@ const SingleUserProfileView = () => {
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
 
         await updateDoc(doc(db, "userChats", currentUser.id), {
+          
           [combinedId + ".userInfo"]: {
             uid: userDetail.id,
             displayName: userDetail.fName,
-            photoURL: userDetail?.profileImg,
+            profileImg: userDetail.profileImg,
           },
           [combinedId + ".date"]: serverTimestamp(), 
         });
@@ -147,7 +148,7 @@ const SingleUserProfileView = () => {
           [combinedId + ".userInfo"]: {
             uid: currentUser.id,
             displayName: currentUser.fName,
-            photoURL: currentUser.profileImg,
+            profileImg: currentUser.profileImg,
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
