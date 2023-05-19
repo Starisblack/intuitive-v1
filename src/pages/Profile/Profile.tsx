@@ -66,7 +66,7 @@ const Profile: FC = () => {
     if (!userDetail) {
       history.push("/login");
     }
-    // setLoading(true);
+    setLoading(true);
 
     try {
       const getUserDetails = async () => {

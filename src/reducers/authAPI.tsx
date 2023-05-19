@@ -44,5 +44,6 @@ export const signUp = async (userInput: {
     isTarot: false,
     email: user.email,
   });
+  await setDoc(doc(db, "userChats", user.uid), {});
   return user;
 };

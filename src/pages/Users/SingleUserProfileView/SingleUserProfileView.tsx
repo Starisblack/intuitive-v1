@@ -17,7 +17,10 @@ import {
   arrayRemove,
   arrayUnion,
   doc,
+  getDoc,
   onSnapshot,
+  serverTimestamp,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import db from "../../../firebase-config";
@@ -30,7 +33,7 @@ import defaultImg from "../../../assets/card-media.png";
 
 const SingleUserProfileView = () => {
   const { id } = useParams<any>();
-  const [userDetail, setUser] = useState<any>();
+  const [userDetail, setUserDetail] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [followLoading, setFollowLoading] = useState<boolean>(false);
   const [imageExist, setImageExist] = useState<boolean>(false);
@@ -44,7 +47,7 @@ const SingleUserProfileView = () => {
 
       onSnapshot(userRef, (doc) => {
         const userData: any = doc.data();
-        setUser(userData);
+        setUserDetail(userData);
         checkIfImageExists(userData.profileImg, (exists: any) => {
           if (exists) {
             setImageExist(true)
@@ -118,6 +121,43 @@ const SingleUserProfileView = () => {
     }
   };
 
+  const messageHandler = async () => {
+    console.log({currentUser: currentUser.id, userDetail: userDetail.id})
+    // check whwther the chat collection in firestore exists, if not then create a new one
+    const combinedId =
+      currentUser.id > userDetail.id
+        ? currentUser.id + userDetail.id
+        : userDetail.id + currentUser.id;
+
+         
+    try {
+      const res = await getDoc(doc(db, "chats", combinedId));
+      if (!res.exists()) {
+        await setDoc(doc(db, "chats", combinedId), { messages: [] });
+
+        await updateDoc(doc(db, "userChats", currentUser.id), {
+          [combinedId + ".userInfo"]: {
+            uid: userDetail.id,
+            displayName: userDetail.fName,
+            photoURL: userDetail?.profileImg,
+          },
+          [combinedId + ".date"]: serverTimestamp(), 
+        });
+        await updateDoc(doc(db, "userChats", userDetail.id), {
+          [combinedId + ".userInfo"]: {
+            uid: currentUser.id,
+            displayName: currentUser.fName,
+            photoURL: currentUser.profileImg,
+          },
+          [combinedId + ".date"]: serverTimestamp(),
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+         
+  };
+
   return (
     <IonPage className="single-user-profile-page">
       <IonHeader collapse="fade" className="ion-no-border">
@@ -186,7 +226,7 @@ const SingleUserProfileView = () => {
                     </IonRow>
                   </IonGrid>
 
-                  <IonButton style={{ margin: "10px" }}>Message</IonButton>
+                  <IonButton onClick={messageHandler} style={{ margin: "10px" }}>Message</IonButton>
 
                   {userDetail?.followers?.includes(currentUser.id) ? (
                     <IonButton
