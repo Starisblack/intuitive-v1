@@ -6,7 +6,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "./store/store";
 import { IonSpinner } from "@ionic/react";
 import "./index.css"
-import "./style.scss"
+
 
 const container = document.getElementById("root");
 const root = createRoot(container!);

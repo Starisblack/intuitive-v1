@@ -17,7 +17,7 @@ export const login = async (userInput: { email: any; password: any }) => {
 
   const { uid } = userData.user;
   const userRef = doc(db, "users", uid);
-   const docSnap = await getDoc(userRef);
+  const docSnap = await getDoc(userRef);
 
   return docSnap.data();
 };
@@ -37,7 +37,7 @@ export const signUp = async (userInput: {
   const { email, password, fName, lName } = userInput;
   const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
- await setDoc(doc(db, "users", user.uid), {
+  await setDoc(doc(db, "users", user.uid), {
     id: user.uid,
     fName,
     lName,

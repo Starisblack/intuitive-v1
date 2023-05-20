@@ -1,5 +1,8 @@
 import {
+  IonBackButton,
+  IonButtons,
   IonContent,
+  IonFooter,
   IonHeader,
   IonPage,
   IonTitle,
@@ -10,28 +13,25 @@ import { useAppSelector } from "../../../store/store";
 import { userSelected } from "../../../reducers/chatReducers";
 import Messages from "../Messages/Messages";
 import Input from "../../../components/Input/Input";
-import "./ChatScreeen.css"
-
+import "./ChatScreeen.css";
 
 const ChatScreeen = () => {
   const user = useAppSelector(userSelected);
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Chats Screen</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        {/* <ChatPanel /> */}
-        <div className="chats">
-          <div className="chatInfo">
-            <span>{user?.displayName}</span>
-          </div>
-          <Messages />
-          <Input />
-        </div>
+    <IonPage className="chat-screen-page">
+      <IonToolbar>
+        <IonButtons slot="start">
+          <IonBackButton color="light" defaultHref="#"></IonBackButton>
+        </IonButtons>
+        <IonTitle style={{ color: "white" }}> {user?.displayName}</IonTitle>
+      </IonToolbar>
+      <IonContent className="chat-screen">
+        <Messages />
       </IonContent>
+
+      <IonFooter>
+        <Input />
+      </IonFooter>
     </IonPage>
   );
 };

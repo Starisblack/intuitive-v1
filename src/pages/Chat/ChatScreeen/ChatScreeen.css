@@ -1,11 +1,14 @@
-.chatInfo {
-    height: 50px;
-    background-color: #5d5b8d;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    color: lightgray;
+.chat-screen-page ion-toolbar{
+   --background: #5d5b8d;
+}
+
+
+
+  .chat-screen{
+    --background: #ddddf7  !important;
   }
+/* .chat-screen .inner-scroll{
+  padding-bottom:  0  !important;
+} */
 
   

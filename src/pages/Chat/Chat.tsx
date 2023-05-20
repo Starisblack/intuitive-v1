@@ -60,7 +60,7 @@ const Chat: React.FC = () => {
           <List
             sx={{ width: 444, maxWidth: "100%", bgcolor: "background.paper" }}
           >
-            {Object.entries(chats)
+          {chats &&  Object.entries(chats)
               ?.sort((a: any, b: any) => b[1].date - a[1].date)
               .map((chat: any) => (
                 <ListItem

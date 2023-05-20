@@ -7,6 +7,7 @@ type AuthState = {
   id: string;
   isAuth: any;
   user: any;
+  currentUser: any
   loading: boolean;
   error: any;
 };
@@ -15,6 +16,7 @@ const initialState: AuthState = {
   id: "",
   isAuth: false,
   user: null,
+  currentUser: null,
   loading: false,
   error: "",
 };
@@ -37,8 +39,11 @@ export const signUpAsync = createAsyncThunk(
   async (userInput: any, { dispatch, rejectWithValue }) => {
     try {
       const user = await signUp(userInput);
-      // console.log(user);
-      return user;
+        const userRef = doc(db, "users", user.uid);
+        onSnapshot(userRef, (doc) => {
+          const userData: any = doc.data();
+           dispatch(authSuccess(userData))
+        });
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -63,9 +68,9 @@ export const authSlice = createSlice({
 
   reducers: {
     authSuccess: (state, action) => {
-      state.user = action.payload
       state.loading = false;
-      state.isAuth = true
+      state.isAuth = true;
+      state.user = action.payload;
     },
 
     logout: (state) => {
@@ -100,9 +105,9 @@ export const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signUpAsync.fulfilled, (state: any, action: any) => {
-        state.loading = false;
-        state.isAuth = true;
-        state.user = action.payload;
+        // state.loading = false;
+        // state.isAuth = true;
+        // state.user = action.payload;
       })
       .addCase(signUpAsync.rejected, (state, action) => {
         state.isAuth = false;

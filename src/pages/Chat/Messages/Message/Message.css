@@ -10,6 +10,10 @@
   margin-bottom: 20px;
 }
 
+.message.owner {
+    flex-direction: row-reverse;
+}
+
 .messageInfo img {
   height: 40px;
   width: 40px;

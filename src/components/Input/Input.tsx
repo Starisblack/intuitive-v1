@@ -11,17 +11,21 @@ import { v4 as uuid } from "uuid";
 import { useAppSelector } from "../../store/store";
 import { user } from "../../reducers/authReducers";
 import { chatId, userSelected } from "../../reducers/chatReducers";
+import "./Input.css"
+
 const Input = () => {
   const [text, setText] = useState("");
   const currentUser = useAppSelector(user);
   const selectedUser = useAppSelector(userSelected);
   const msgId = useAppSelector(chatId);
-  //   const { currentUser } = useContext(AuthContext);
-  //   const { data } = useContext(ChatContext);
+
+
+
+
   const handleSend = async () => {
     if (text === "") {
-      alert("field can't be empty");
-    }
+     return  alert("field can't be empty");
+    } 
 
     try {
       await updateDoc(doc(db, "chats", msgId), {
@@ -33,7 +37,7 @@ const Input = () => {
         }),
       });
 
-      await updateDoc(doc(db, "userChats", currentUser.uid), {
+      await updateDoc(doc(db, "userChats", currentUser.id), {
         [msgId + ".lastMessage"]: {
           text,
         },
@@ -46,7 +50,6 @@ const Input = () => {
         },
         [msgId + ".date"]: serverTimestamp(),
       });
-
       setText("");
     } catch (error) {
       console.log(error);
