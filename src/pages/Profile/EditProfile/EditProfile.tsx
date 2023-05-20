@@ -1,17 +1,9 @@
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { Link, useHistory } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import "./EditProfile.css";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc,  updateDoc } from "firebase/firestore";
 import { FC, useState } from "react";
-import { IonContent, IonLoading, IonPage } from "@ionic/react";
-import PasswordInput from "../../../components/PasswordInput";
 import db from "../../../firebase-config";
 
 type Inputs = {
@@ -29,7 +21,7 @@ type EditProfileProps = {
   setLoading: any
 };
 const EditProfile: FC<EditProfileProps> = ({ handleClose, id, userDetail, setLoading }) => {
-  const history = useHistory();
+  
 
   const [error, setError] = useState("");
 

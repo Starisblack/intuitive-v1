@@ -6,6 +6,7 @@ import {
   IonContent,
   IonGrid,
   IonHeader,
+  IonLoading,
   IonPage,
   IonRow,
   IonSpinner,
@@ -30,16 +31,20 @@ import { useSelector } from "react-redux";
 import { user } from "../../../reducers/authReducers";
 import Toast from "../../../components/Toast/Toast";
 import defaultImg from "../../../assets/card-media.png";
+import { useAppDispatch } from "../../../store/store";
+import { changeUser } from "../../../reducers/chatReducers";
 
 const SingleUserProfileView = () => {
   const { id } = useParams<any>();
   const [userDetail, setUserDetail] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [followLoading, setFollowLoading] = useState<boolean>(false);
+  const [chatLoading, setChatLoading] = useState<boolean>(false);
   const [imageExist, setImageExist] = useState<boolean>(false);
   const currentUser = useSelector(user);
   const presentToast = Toast();
-  const history = useHistory()
+  const history = useHistory();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setLoading(true);
@@ -51,11 +56,11 @@ const SingleUserProfileView = () => {
         setUserDetail(userData);
         checkIfImageExists(userData.profileImg, (exists: any) => {
           if (exists) {
-            setImageExist(true)
+            setImageExist(true);
           } else {
-           setImageExist(false)
+            setImageExist(false);
           }
-        })
+        });
       });
       setLoading(false);
     };
@@ -63,7 +68,7 @@ const SingleUserProfileView = () => {
     getUserDetails();
   }, [id]);
 
-  function checkIfImageExists(url:any, callback: any) {
+  function checkIfImageExists(url: any, callback: any) {
     const img = new Image();
     img.src = url;
 
@@ -73,17 +78,14 @@ const SingleUserProfileView = () => {
       img.onload = () => {
         callback(true);
       };
-      
+
       img.onerror = () => {
         callback(false);
       };
     }
   }
 
-
- 
-
-  const followHandler = async (id: string) => { 
+  const followHandler = async (id: string) => {
     setFollowLoading(true);
     try {
       //  func to update user followers and those who are following
@@ -98,7 +100,7 @@ const SingleUserProfileView = () => {
         });
       });
     } catch (err) {
-      setLoading(false)
+      setLoading(false);
       console.log(err);
     }
   };
@@ -123,27 +125,26 @@ const SingleUserProfileView = () => {
   };
 
   const messageHandler = async () => {
-    console.log({currentUser: currentUser, userDetail: userDetail})
+    console.log({ currentUser: currentUser, userDetail: userDetail });
     // check whwther the chat collection in firestore exists, if not then create a new one
     const combinedId =
       currentUser.id > userDetail.id
         ? currentUser.id + userDetail.id
         : userDetail.id + currentUser.id;
 
-         
     try {
+      setChatLoading(true);
       const res = await getDoc(doc(db, "chats", combinedId));
       if (!res.exists()) {
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
 
         await updateDoc(doc(db, "userChats", currentUser.id), {
-          
           [combinedId + ".userInfo"]: {
             uid: userDetail.id,
             displayName: userDetail.fName,
             profileImg: userDetail.profileImg ? userDetail.profileImg : "",
           },
-          [combinedId + ".date"]: serverTimestamp(), 
+          [combinedId + ".date"]: serverTimestamp(),
         });
         await updateDoc(doc(db, "userChats", userDetail.id), {
           [combinedId + ".userInfo"]: {
@@ -153,12 +154,14 @@ const SingleUserProfileView = () => {
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
-      } 
-      history.push("/chat")
+      }
+
+      dispatch(changeUser({ user: userDetail, currentUser: currentUser }));
+      setChatLoading(false);
+      history.push("/chat-screen");
     } catch (err) {
       console.log(err);
     }
-         
   };
 
   return (
@@ -171,6 +174,13 @@ const SingleUserProfileView = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="single-user-profile">
+        <IonLoading
+          cssClass="my-custom-class"
+          isOpen={chatLoading}
+          onDidDismiss={() => console.log("signout")}
+          message={"loading..."}
+        />
+
         {loading ? (
           <Spinner />
         ) : (
@@ -187,11 +197,7 @@ const SingleUserProfileView = () => {
                       }}
                     >
                       <img
-                        src={
-                          imageExist
-                            ? userDetail?.profileImg
-                            : defaultImg
-                        }
+                        src={imageExist ? userDetail?.profileImg : defaultImg}
                         alt="user"
                       />
                     </div>
@@ -229,7 +235,12 @@ const SingleUserProfileView = () => {
                     </IonRow>
                   </IonGrid>
 
-                  <IonButton onClick={messageHandler} style={{ margin: "10px" }}>Message</IonButton>
+                  <IonButton
+                    onClick={messageHandler}
+                    style={{ margin: "10px" }}
+                  >
+                    Message
+                  </IonButton>
 
                   {userDetail?.followers?.includes(currentUser.id) ? (
                     <IonButton

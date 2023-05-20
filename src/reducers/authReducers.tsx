@@ -4,30 +4,31 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import db from "../firebase-config";
 
 type AuthState = {
-  id: string;
   isAuth: any;
   user: any;
-  currentUser: any
   loading: boolean;
+  signoutLoading:  boolean;
   error: any;
 };
 
 const initialState: AuthState = {
-  id: "",
   isAuth: false,
   user: null,
-  currentUser: null,
   loading: false,
+  signoutLoading: false,
   error: "",
 };
 
 export const loginAsync = createAsyncThunk(
   "auth/login",
-  async (userInput: any, {rejectWithValue }) => {
+  async (userInput: any, { dispatch, rejectWithValue }) => {
     try {
-      const userData = await login(userInput);  
-       return userData;
-    
+      const userId = await login(userInput);
+      const userRef = doc(db, "users", userId);
+      onSnapshot(userRef, (doc) => {
+        const userData: any = doc.data();
+        dispatch(authSuccess(userData));
+      });
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -39,11 +40,11 @@ export const signUpAsync = createAsyncThunk(
   async (userInput: any, { dispatch, rejectWithValue }) => {
     try {
       const user = await signUp(userInput);
-        const userRef = doc(db, "users", user.uid);
-        onSnapshot(userRef, (doc) => {
-          const userData: any = doc.data();
-           dispatch(authSuccess(userData))
-        });
+      const userRef = doc(db, "users", user.uid);
+      onSnapshot(userRef, (doc) => {
+        const userData: any = doc.data();
+        dispatch(authSuccess(userData));
+      });
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -52,10 +53,11 @@ export const signUpAsync = createAsyncThunk(
 
 export const logoutAsync = createAsyncThunk(
   "auth/logout",
-  async (_, { dispatch, rejectWithValue }) => {
+  async (_, {rejectWithValue }) => {
     try {
-      await signUserOut();
-      dispatch(logout());
+    const res =  await signUserOut();
+      // dispatch(logout());
+      return res
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -72,11 +74,6 @@ export const authSlice = createSlice({
       state.isAuth = true;
       state.user = action.payload;
     },
-
-    logout: (state) => {
-      state.isAuth = false;
-      state.user = null;
-    },
     setError: (state, action) => {
       state.error = action.payload;
     },
@@ -92,9 +89,9 @@ export const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(loginAsync.fulfilled, (state: any, action: any) => {
-        state.loading = false;
-        state.user = { ...action.payload };
-        state.isAuth = true;
+        // state.loading = false;
+        // state.user = { ...action.payload };
+        // state.isAuth = true;
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.isAuth = false;
@@ -114,15 +111,15 @@ export const authSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(logoutAsync.pending, (state) => {
-        state.loading = true;
+        state.signoutLoading = true;
       })
       .addCase(logoutAsync.fulfilled, (state, action) => {
-        state.loading = false;
-        state.isAuth = false;
         state.user = null;
+        state.isAuth = false;
+        state.signoutLoading = false;
       })
       .addCase(logoutAsync.rejected, (state, action) => {
-        state.loading = false;
+        state.signoutLoading = false;
         state.isAuth = false;
         state.user = null;
       });
@@ -131,10 +128,11 @@ export const authSlice = createSlice({
 
 // trackUserAuth
 
-export const { logout, setError, clearError, authSuccess } = authSlice.actions;
+export const {setError, clearError, authSuccess } = authSlice.actions;
 export const isAuth = (state: any) => state.auth.isAuth;
 export const user = (state: any) => state.auth.user;
 export const error = (state: any) => state.auth.error;
 export const loadingStatus = (state: any) => state.auth.loading;
+export const signoutLoading = (state: any) => state.auth.signoutLoading;
 
 export default authSlice.reducer;

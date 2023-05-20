@@ -3,7 +3,7 @@ import { IonSpinner } from "@ionic/react";
 const Spinner = () => {
   return <div
     style={{
-      height: "100vh",
+      height: "70vh",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",

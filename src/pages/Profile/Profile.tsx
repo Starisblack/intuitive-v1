@@ -15,6 +15,7 @@ import {
   IonCardHeader,
   IonCardContent,
   IonCardTitle,
+  IonLoading,
 } from "@ionic/react";
 import { power } from "ionicons/icons";
 import UploadProfileImg from "../../components/UploadProfileImg";
@@ -22,7 +23,7 @@ import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import db from "../../firebase-config";
 import PopUp from "../../components/PopUp";
 import { useAppDispatch, useAppSelector } from "../../store/store";
-import { logoutAsync } from "../../reducers/authReducers";
+import { loadingStatus, logoutAsync, signoutLoading } from "../../reducers/authReducers";
 import { useHistory } from "react-router";
 import { user } from "../../reducers/authReducers";
 
@@ -41,6 +42,7 @@ const Profile: FC = () => {
   const history = useHistory();
 
   const userDetail = useAppSelector(user);
+  const logoutLoading = useAppSelector(signoutLoading)
 
   const dispatch = useAppDispatch();
 
@@ -57,10 +59,8 @@ const Profile: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [userPosts, setUserPosts] = useState<any>([]);
+  // const [signoutLoading, setSignoutLoading] = useState<boolean>(false);
 
-  const signOutHandler = async () => {
-    await dispatch(logoutAsync());
-  };
 
   useEffect(() => {
     if (!userDetail) {
@@ -102,6 +102,11 @@ const Profile: FC = () => {
     }
   }, [history, userDetail]);
 
+
+  const signOutHandler = async () => {
+    await dispatch(logoutAsync());
+  };
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -119,11 +124,13 @@ const Profile: FC = () => {
       <PopUp
         openPopUp={open}
         id={userDetail.id}
-        userDetail={userData}
+        userDetail={userDetail}
         handleClose={handleClose}
       />
     );
   }
+
+
 
   return (
     <IonPage>
@@ -143,6 +150,12 @@ const Profile: FC = () => {
       </IonToolbar>
 
       <IonContent fullscreen className="profile-page">
+      <IonLoading
+        cssClass="my-custom-class"
+        isOpen={logoutLoading}
+        onDidDismiss={() => console.log("signout")}
+        message={"logging out..."}
+      />
         {loading ? (
           <div
             style={{
@@ -252,7 +265,7 @@ const Profile: FC = () => {
                     <div>
                       {" "}
                       <h1>You have no Post</h1>
-                      <IonButton>Add Post</IonButton>
+                      {/* <IonButton>Add Post</IonButton> */}
                     </div>
                   )}
                 </div>

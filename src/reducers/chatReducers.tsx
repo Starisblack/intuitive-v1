@@ -4,16 +4,14 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import db from "../firebase-config";
 
 type ChatState = {
-    chatId: string,
-    user: {},
+  chatId: string;
+  user: {};
 };
 
 const initialState: ChatState = {
-    chatId: "",
-    user: {},
+  chatId: "",
+  user: {},
 };
-
-
 
 export const chatSlice = createSlice({
   name: "chat",
@@ -21,20 +19,21 @@ export const chatSlice = createSlice({
 
   reducers: {
     changeUser: (state, action) => {
-        console.log(action.payload)
-      state.user = action.payload.user
-     state.chatId = action.payload.currentUser.id > action.payload.user.uid
-        ? action.payload.currentUser.id + action.payload.user.uid
-        : action.payload.user.uid + action.payload.currentUser.id
-    }
+      const selectedUserId = action.payload.user.uid
+        ? action.payload.user.uid
+        : action.payload.user.id;
+        state.user = action.payload.user
+       state.chatId = action.payload.currentUser.id > selectedUserId
+          ? action.payload.currentUser.id + selectedUserId
+          : selectedUserId + action.payload.currentUser.id
+    },
   },
-
 });
 
 // trackUserAuth
 
-export const { changeUser} = chatSlice.actions;
+export const { changeUser } = chatSlice.actions;
 
-export const chatId = (state: any) => state.chat.chatId
-export const userSelected = (state: any) => state.chat.user
+export const chatId = (state: any) => state.chat.chatId;
+export const userSelected = (state: any) => state.chat.user;
 export default chatSlice.reducer;

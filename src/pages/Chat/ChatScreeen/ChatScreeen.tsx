@@ -17,13 +17,14 @@ import "./ChatScreeen.css";
 
 const ChatScreeen = () => {
   const user = useAppSelector(userSelected);
+ 
   return (
     <IonPage className="chat-screen-page">
       <IonToolbar>
         <IonButtons slot="start">
           <IonBackButton color="light" defaultHref="#"></IonBackButton>
         </IonButtons>
-        <IonTitle style={{ color: "white" }}> {user?.displayName}</IonTitle>
+        <IonTitle style={{ color: "white" }}> {user?.displayName ? user.displayName : user.fName}</IonTitle>
       </IonToolbar>
       <IonContent className="chat-screen">
         <Messages />

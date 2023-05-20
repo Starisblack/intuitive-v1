@@ -9,7 +9,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 const persistConfig = {
   key: 'user',
   storage,
-  blacklist: ["loading", "id", "error"]
+  blacklist: ["loading", "id", "error", "signoutLoading"]
 }
 
 

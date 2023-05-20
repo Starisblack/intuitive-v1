@@ -6,7 +6,7 @@ import {
 import db, { auth } from "../firebase-config";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-export const signUserOut = () => {
+export const signUserOut =  () => {
   return signOut(auth);
 };
 
@@ -16,10 +16,8 @@ export const login = async (userInput: { email: any; password: any }) => {
   const userData: any = await signInWithEmailAndPassword(auth, email, password);
 
   const { uid } = userData.user;
-  const userRef = doc(db, "users", uid);
-  const docSnap = await getDoc(userRef);
 
-  return docSnap.data();
+  return uid
 };
 
 // const userRef = doc(db, "users", user.uid);

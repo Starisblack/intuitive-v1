@@ -2,6 +2,7 @@ import {
   IonContent,
   IonHeader,
   IonPage,
+  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -25,26 +26,42 @@ import { changeUser } from "../../reducers/chatReducers";
 const Chat: React.FC = () => {
   const history = useHistory();
 
-  const [chats, setChats] = useState<any>([]);
+  const [chats, setChats] = useState<any>();
   const currentUser = useAppSelector(user);
   const dispatch = useAppDispatch();
-  // const { dispatch } = useContext(ChatContext);
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const getChats = () => {
-      const unsub = onSnapshot(doc(db, "userChats", currentUser.id), (doc) => {
-        setChats(doc.data());
-      });
-      return () => {
-        unsub();
+    if (!currentUser) {
+      history.push("/login");
+    }
+
+    try {
+
+      const getChats = () => {
+        setLoading(true);
+  
+        onSnapshot(doc(db, "userChats", currentUser.id), (doc) => {
+          setChats(doc.data());
+          setLoading(false);
+        });
+        // const unsub =
+        // return () => {
+        //   unsub();
+        // };
       };
-    };
-    currentUser.id && getChats();
-  }, [currentUser.uid]);
+       getChats();
+      
+    } catch (error) {
+       console.log(error)
+    }
+    
+  }, [currentUser, history]);
 
   const handleSelect = (selectedUser: any) => {
     dispatch(changeUser({ user: selectedUser, currentUser: currentUser }));
-    history.push("/chat-screen")
+    history.push("/chat-screen");
   };
 
   return (
@@ -54,13 +71,13 @@ const Chat: React.FC = () => {
           <IonTitle>Chat</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        {/* <ChatPanel /> */}
-        <div className="chats">
+      <IonContent>
+
+        {chats && (
           <List
             sx={{ width: 444, maxWidth: "100%", bgcolor: "background.paper" }}
           >
-          {chats &&  Object.entries(chats)
+            {loading ? <IonSpinner> </IonSpinner> : Object.entries(chats)
               ?.sort((a: any, b: any) => b[1].date - a[1].date)
               .map((chat: any) => (
                 <ListItem
@@ -79,7 +96,7 @@ const Chat: React.FC = () => {
                 </ListItem>
               ))}
           </List>
-        </div>
+        )}
       </IonContent>
     </IonPage>
   );
