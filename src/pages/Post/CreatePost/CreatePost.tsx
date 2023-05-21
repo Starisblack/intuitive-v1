@@ -1,4 +1,4 @@
-import { FC} from "react";
+import { FC } from "react";
 import "./CreatePost.css";
 import { useState } from "react";
 import {
@@ -29,10 +29,10 @@ import {
 } from "firebase/storage";
 import { useForm, SubmitHandler } from "react-hook-form";
 import db, { app } from "../../../firebase-config";
-import VideoPlayer from "../../../components/VideoPlayer";
-import { useSelector } from "react-redux";
 import { user } from "../../../reducers/authReducers";
-import "./CreatePost.css"
+import "./CreatePost.css";
+import { useAppSelector } from "../../../store/store";
+import { format, parseISO } from "date-fns";
 
 type Inputs = {
   category: string;
@@ -44,13 +44,14 @@ type Inputs = {
 
 const CreatePost: FC = () => {
   let history = useHistory();
-  const currentUser = useSelector(user)
+
+  const currentUser = useAppSelector(user);
   const { handleSubmit, register, resetField, reset, watch } = useForm<Inputs>({
     mode: "onChange",
     defaultValues: {
       video: "",
-      picture: ""
-    }
+      picture: "",
+    },
   });
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,18 +60,20 @@ const CreatePost: FC = () => {
   // const picture = watch("picture");
   // const video = watch("video");
 
-
   const createPost = async (url: string, userInput: any) => {
     const { content, category, title } = userInput;
-    const postMedia = userInput.picture === "" ? {videoURL: url} : {imgURL: url}
+    const postMedia =
+      userInput.picture === "" ? { videoURL: url } : { imgURL: url };
 
     try {
       await addDoc(collection(db, "posts"), {
         content,
         category,
         title,
+        author: currentUser.fName + " " + currentUser.lName,
+        date: format(new Date(), "MMMM dd, yyyy"),
         postMedia,
-        createdBy: currentUser.uid,
+        createdBy: currentUser.id,
         created: Timestamp.now(),
       });
 
@@ -84,7 +87,7 @@ const CreatePost: FC = () => {
   };
 
   const uploadPostImg = (userInput: any) => {
-    const path = userInput.picture === "" ? "videos/" : "images/"
+    const path = userInput.picture === "" ? "videos/" : "images/";
 
     const storage = getStorage(app);
     const storageRef = ref(storage, path + file.name);
@@ -95,7 +98,7 @@ const CreatePost: FC = () => {
       null,
       (error) => {
         alert(error);
-        setLoading(false)
+        setLoading(false);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
@@ -109,9 +112,6 @@ const CreatePost: FC = () => {
     setLoading(true);
     uploadPostImg(userInput);
   };
-
- 
- 
 
   return (
     <IonPage>
@@ -179,9 +179,7 @@ const CreatePost: FC = () => {
               ></IonTextarea>
             </IonItem>
 
-            
-
-              {/* div to display image selected */}
+            {/* div to display image selected */}
             {/* {picture  &&  <div style={{height: "250px", width: "100%", margin: "20px 0"}} >
                 <IonImg style={{height: "100%"}} src={URL.createObjectURL(file)} />
             </div>}
@@ -191,45 +189,47 @@ const CreatePost: FC = () => {
             </div>} */}
 
             <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "5px",
-                  margin: "15px 0",
-                }}
-              >
-                <label className="form-label">Select Picture</label>
-                <input
-                  className="pick-img-Btn"
-                  type="file"
-                  {...register("picture", {
-                    onChange: (e) => { 
-                      setFile(e.target.files[0]) 
-                      resetField("video")}
-                  })}
-                  accept="image/*"
-                />
-              </div>
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "5px",
+                margin: "15px 0",
+              }}
+            >
+              <label className="form-label">Select Picture</label>
+              <input
+                className="pick-img-Btn"
+                type="file"
+                {...register("picture", {
+                  onChange: (e) => {
+                    setFile(e.target.files[0]);
+                    resetField("video");
+                  },
+                })}
+                accept="image/*"
+              />
+            </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "5px",
-                  margin: "15px 0",
-                }}
-              >
-                <label className="form-label">Select Video</label>
-                <input
-                  type="file"
-                  {...register("video", {
-                    onChange: (e) => {
-                      setFile(e.target.files[0]) 
-                      resetField("picture")}
-                  })}
-                  accept="video/*"
-                ></input>
-              </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "5px",
+                margin: "15px 0",
+              }}
+            >
+              <label className="form-label">Select Video</label>
+              <input
+                type="file"
+                {...register("video", {
+                  onChange: (e) => {
+                    setFile(e.target.files[0]);
+                    resetField("picture");
+                  },
+                })}
+                accept="video/*"
+              ></input>
+            </div>
 
             <IonButton id="publish" type="submit" expand="block">
               {" "}

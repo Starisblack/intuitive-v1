@@ -149,7 +149,7 @@ const Profile: FC = () => {
         </IonButtons>
       </IonToolbar>
 
-      <IonContent fullscreen className="profile-page">
+      <IonContent  className="profile-page">
       <IonLoading
         cssClass="my-custom-class"
         isOpen={logoutLoading}
@@ -264,7 +264,7 @@ const Profile: FC = () => {
                   ) : (
                     <div>
                       {" "}
-                      <h1>You have no Post</h1>
+                      <p>You have no Post</p>
                       {/* <IonButton>Add Post</IonButton> */}
                     </div>
                   )}

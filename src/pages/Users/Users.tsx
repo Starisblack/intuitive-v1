@@ -87,7 +87,7 @@ const Users: React.FC = () => {
           <IonTitle>Users</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent >
         {loading ? (
           <div
             style={{

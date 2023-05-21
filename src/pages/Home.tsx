@@ -107,7 +107,7 @@ const Home: React.FC = () => {
       {loading ? (
         <Spinner />
       ) : (
-        <IonContent fullscreen className="home-page">
+        <IonContent className="home-page">
           <div className="home-content-container">
             <SearchBar placeHolder="search posts" onChange={searchInput} />
             <div style={{ marginTop: "30px" }}>

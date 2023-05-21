@@ -43,7 +43,7 @@ function a11yProps(index: number) {
 type TopicTabsProps = {
   posts: any;
 };
-const TopicTabs: React.FC<TopicTabsProps> = ({ posts}) => {
+const TopicTabs: React.FC<TopicTabsProps> = ({ posts }) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -59,6 +59,8 @@ const TopicTabs: React.FC<TopicTabsProps> = ({ posts}) => {
             return (
               <IonCol key={post.id} size="12" size-sm="6" size-lg="4">
                 <PostCard
+                  author={post.author}
+                  date={post.date}
                   title={post.title}
                   content={post.content}
                   imgURL={post.postMedia.imgURL}
@@ -98,6 +100,8 @@ const TopicTabs: React.FC<TopicTabsProps> = ({ posts}) => {
               return (
                 <IonCol key={post.id} size="12" size-sm="6" size-lg="4">
                   <PostCard
+                    author={post.author}
+                    date={post.date}
                     title={post.title}
                     content={post.content}
                     imgURL={post.postMedia.imgURL}

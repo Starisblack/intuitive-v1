@@ -2,7 +2,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useForm, SubmitHandler } from "react-hook-form";
 import "./EditProfile.css";
-import { doc,  updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { FC, useState } from "react";
 import db from "../../../firebase-config";
 
@@ -18,11 +18,14 @@ type EditProfileProps = {
   handleClose: () => void;
   userDetail?: any;
   id?: any;
-  setLoading: any
+  setLoading: any;
 };
-const EditProfile: FC<EditProfileProps> = ({ handleClose, id, userDetail, setLoading }) => {
-  
-
+const EditProfile: FC<EditProfileProps> = ({
+  handleClose,
+  id,
+  userDetail,
+  setLoading,
+}) => {
   const [error, setError] = useState("");
 
   const { handleSubmit, register, reset } = useForm<Inputs>();
@@ -31,30 +34,43 @@ const EditProfile: FC<EditProfileProps> = ({ handleClose, id, userDetail, setLoa
     const { fName, lName, bio } = data;
 
     setLoading(true);
-    const saveHandler = async () => {
-      const postDocRef = doc(db, "users", id);
+    const postDocRef = doc(db, "users", id);
 
-      try {
-        await updateDoc(postDocRef, {
-          fName,
-          lName,
-          bio,
-        });
-        handleClose()
-        setLoading(false);
-        
-      } catch (err: any) {
-        setError(err);
-        setLoading(false);
-      }
-    };
+    try {
+      await updateDoc(postDocRef, {
+        fName,
+        lName,
+        bio,
+      });
+      handleClose();
+      setLoading(false);
+    } catch (err: any) {
+      setError(err);
+      setLoading(false);
+    }
+    // const saveHandler = async () => {
+    //   const postDocRef = doc(db, "users", id);
 
-    saveHandler();
+    //   try {
+    //     await updateDoc(postDocRef, {
+    //       fName,
+    //       lName,
+    //       bio,
+    //     });
+    //     handleClose()
+    //     setLoading(false);
+
+    //   } catch (err: any) {
+    //     setError(err);
+    //     setLoading(false);
+    //   }
+    // };
+
+    // saveHandler();
   };
 
   return (
     <>
-
       <form onSubmit={handleSubmit(onSubmitHandler)}>
         <TextField
           {...register("fName")}
@@ -90,7 +106,6 @@ const EditProfile: FC<EditProfileProps> = ({ handleClose, id, userDetail, setLoa
           margin="normal"
           rows={4}
           defaultValue={userDetail?.bio}
-        
         />
 
         <p

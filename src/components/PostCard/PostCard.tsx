@@ -15,6 +15,8 @@ import { Link } from 'react-router-dom';
 import "./PostCard.css"
 
 type PostCardProps ={
+   author: string;
+   date: string;
    title: string;
    content: string,
    imgURL?: string,
@@ -22,7 +24,7 @@ type PostCardProps ={
    link: string
 }
 
-const PostCard: React.FC<PostCardProps> =  ({title, content, imgURL, videoURL, link}) => {
+const PostCard: React.FC<PostCardProps> =  ({author, date, title, content, imgURL, videoURL, link}) => {
 
 
  
@@ -36,8 +38,8 @@ const PostCard: React.FC<PostCardProps> =  ({title, content, imgURL, videoURL, l
           </Avatar>
         }
     
-        title={"Sam" + " " + "Ogunniyi"}
-        subheader="September 14, 2016"
+        title={author}
+        subheader={date}
       />
 
       {videoURL && <VideoPlayer link={videoURL} height="200px" />}
