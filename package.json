@@ -16,7 +16,7 @@
     "@capacitor/app": "5.0.2",
     "@capacitor/core": "5.0.3",
     "@capacitor/haptics": "5.0.2",
-    "@capacitor/ios": "5.0.3",
+    "@capacitor/ios": "^5.0.3",
     "@capacitor/keyboard": "5.0.2",
     "@capacitor/status-bar": "5.0.2",
     "@emotion/react": "^11.11.0",
