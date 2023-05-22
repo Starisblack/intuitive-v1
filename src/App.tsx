@@ -29,11 +29,11 @@ import SinglePost from "./pages/Post/SinglePost/SinglePost";
 import SingleUserProfileView from "./pages/Users/SingleUserProfileView/SingleUserProfileView";
 import Register from "./pages/Auth/Register/Register";
 import CreatePost from "./pages/Post/CreatePost/CreatePost";
-import ForgotPassword from "./pages/Auth/ForgotPassword/ForgotPassword";
 import { useAppSelector } from "./store/store";
 import { isAuth } from "./reducers/authReducers";
 import { people, home, chatbubbles, person } from "ionicons/icons";
 import ChatScreeen from "./pages/Chat/ChatScreeen/ChatScreeen";
+import ForgotPassword from "./pages/Auth/ForgotPassword/ForgotPassword";
 
 setupIonicReact();
 
@@ -93,7 +93,7 @@ const App: React.FC = () => {
             <Route exact path="/register">
               <Register />
             </Route>
-            <Route exact path="/forgotpassword">
+            <Route  path="/forgotpassword">
               <ForgotPassword />
             </Route>
             <Route exact path="/chat">
