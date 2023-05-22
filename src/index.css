@@ -1,3 +1,37 @@
-ion-tab-button{
-    --color-selected: rgb(186, 137, 60);
+ion-tab-button {
+  --color-selected: rgb(186, 137, 60);
+}
+
+:host {
+  --background: white !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .md body {
+    --ion-background-color: white;
+  }
+
+  .MuiTypography-root {
+    color: black;
+  }
+
+  .welcome-container p{
+    color: black;
+  }
+
+  .text-muted{
+    color: black;
+  }
+
+  .MuiGrid-root p{
+    color: black;
+  }
+
+  .searchbar-input{
+    color: black;
+  }
+
+  /* .MuiOutlinedInput-notchedOutline{
+    border-color: white;
+} */
 }

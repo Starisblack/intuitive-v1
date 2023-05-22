@@ -4,7 +4,15 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Button } from "@mui/material";
 import "./ForgotPassword.css";
-import { IonContent, IonPage, IonSpinner } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonSpinner,
+  IonToolbar,
+} from "@ionic/react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../../firebase-config";
 
@@ -40,6 +48,13 @@ const ForgotPassword = () => {
 
   return (
     <IonPage>
+      <IonHeader collapse="fade" className="ion-no-border">
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton color="dark"></IonBackButton>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
       <IonContent fullscreen>
         <div className="forgot-page" style={{ marginTop: "64px" }}>
           <Container component="main" maxWidth="xs">
