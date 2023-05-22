@@ -11,27 +11,16 @@ ion-tab-button {
     --ion-background-color: white;
   }
 
-  .MuiTypography-root {
+  .MuiTypography-root,
+  .welcome-container p,
+  .text-muted,
+  .MuiGrid-root p,
+  .searchbar-input,
+  .messageContent p {
     color: black;
   }
 
-  .welcome-container p{
-    color: black;
+  .input input {
+    background-color: white;
   }
-
-  .text-muted{
-    color: black;
-  }
-
-  .MuiGrid-root p{
-    color: black;
-  }
-
-  .searchbar-input{
-    color: black;
-  }
-
-  /* .MuiOutlinedInput-notchedOutline{
-    border-color: white;
-} */
 }
