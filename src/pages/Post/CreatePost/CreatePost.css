@@ -1,25 +1,37 @@
-.create-post-content{
-         padding-top: 10%;
-         width: 444px;
-         max-width: 100%;
-         margin: 0 auto;
-         display: flex;
-         flex-direction: column;
+.create-post-content {
+  padding-top: 10%;
+  width: 444px;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .create-post-content ion-button {
-    margin-top: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .item .item-native {
-    padding-inline-start: 0  !important;
-
+  padding-inline-start: 0 !important;
 }
 
-@media (max-width: 769px)  {
-     .create-post-content{
-        padding-left: 5%;
-        padding-right: 5%;
-     }
+@media (max-width: 769px) {
+  .create-post-content {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
 }
 
+@media (prefers-color-scheme: dark) {
+  .create-post-content ion-item {
+    --background: white;
+  }
+
+  .label-text-wrapper,
+  .native-input.sc-ion-input-md, .select-wrapper, .native-wrapper, .native-textarea, .form-label {
+    color: black;
+  }
+  ion-select{
+    color: black !important;
+  }
+}
