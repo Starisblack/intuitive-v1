@@ -119,11 +119,11 @@ const Profile: FC = () => {
   let showPopUp = null;
 
   if (userDetail) {
-    showProfileImg = <UploadProfileImg id={userDetail.id} fileURL={userDetail?.profileImg} />;
+    showProfileImg = <UploadProfileImg id={userDetail?.id} fileURL={userDetail?.profileImg} />;
     showPopUp = (
       <PopUp
         openPopUp={open}
-        id={userDetail.id}
+        id={userDetail?.id}
         userDetail={userDetail}
         handleClose={handleClose}
       />
