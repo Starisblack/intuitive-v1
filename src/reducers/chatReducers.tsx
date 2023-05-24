@@ -9,7 +9,7 @@ type ChatState = {
 };
 
 const initialState: ChatState = {
-  chatId: "",
+  chatId: "null",
   user: {},
 };
 

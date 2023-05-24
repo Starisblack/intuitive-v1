@@ -31,7 +31,7 @@ function Messages() {
         </div>
       ) : (
         <>
-          {messages.map((m: any) => (
+          {messages?.map((m: any) => (
             <Message message={m} key={m.id} />
           ))}
         </>

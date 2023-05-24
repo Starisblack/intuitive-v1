@@ -46,6 +46,8 @@ const SingleUserProfileView = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
 
+  console.log(window.innerWidth)
+
   useEffect(() => {
     setLoading(true);
     const getUserDetails = async () => {
@@ -125,7 +127,7 @@ const SingleUserProfileView = () => {
   };
 
   const messageHandler = async () => {
-    console.log({ currentUser: currentUser, userDetail: userDetail });
+
     // check whwther the chat collection in firestore exists, if not then create a new one
     const combinedId =
       currentUser.id > userDetail.id
@@ -158,7 +160,12 @@ const SingleUserProfileView = () => {
 
       dispatch(changeUser({ user: userDetail, currentUser: currentUser }));
       setChatLoading(false);
-      history.push("/chat-screen");
+       if(window.innerWidth >= 769){
+         history.push("/chat");
+       } else {
+         history.push("/chat-screen");
+       }
+     
     } catch (err) {
       console.log(err);
     }
@@ -177,7 +184,6 @@ const SingleUserProfileView = () => {
         <IonLoading
           cssClass="my-custom-class"
           isOpen={chatLoading}
-          onDidDismiss={() => console.log("signout")}
           message={"loading..."}
         />
 

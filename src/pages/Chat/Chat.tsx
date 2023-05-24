@@ -51,7 +51,7 @@ const Chat: React.FC = () => {
         //   unsub();
         // };
       };
-       getChats();
+      currentUser && getChats();
       
     } catch (error) {
        console.log(error)
@@ -66,15 +66,15 @@ const Chat: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader className="mobileOnly">
         <IonToolbar>
-          <IonTitle>Chat</IonTitle>
+          <IonTitle>Chats</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-
+       <ChatPanel loading={loading} handleSelect={handleSelect}  chats={chats} />
         {chats && (
-          <List
+          <List className="mobileOnly"
             sx={{ width: 444, maxWidth: "100%", bgcolor: "background.paper" }}
           >
             {loading ? <IonSpinner> </IonSpinner> : Object.entries(chats)

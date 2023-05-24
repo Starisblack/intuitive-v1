@@ -2,6 +2,19 @@ ion-tab-button {
   --color-selected: rgb(186, 137, 60);
 }
 
+
+@media (min-width: 769px) {
+  .mobileOnly {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktopOnly {
+    display: none;
+  }
+}
+
 :host {
   --background: white !important;
 }
@@ -9,6 +22,10 @@ ion-tab-button {
 @media (prefers-color-scheme: dark) {
   .md body {
     --ion-background-color: white;
+  }
+
+  ion-spinner{
+    --color: black;
   }
 
   .MuiTypography-root,
