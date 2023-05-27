@@ -37,8 +37,10 @@ const ForgotPassword = () => {
       setTimeout(() => {
         setSuccess("");
       }, 3000);
+      setLoading(false)
     } catch (error: any) {
       setError(error);
+      setLoading(false)
 
       setTimeout(() => {
         setError("");

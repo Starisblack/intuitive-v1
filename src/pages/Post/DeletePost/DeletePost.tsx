@@ -15,7 +15,6 @@ type DeletePostProps = {
 const  DeletePost: FC<DeletePostProps> = ({id, fileRef, path}) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  console.log(fileRef)
   const httpsReference = ref(storage, fileRef);
 
   let fileName = httpsReference.name;

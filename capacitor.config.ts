@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'intuitive2.0',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    iosScheme: "ionic"
   }
 };
 
