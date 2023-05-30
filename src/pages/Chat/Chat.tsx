@@ -114,6 +114,10 @@ const Chat: React.FC = () => {
   const clickedChatWhereNotSender = (chatIndex: any) =>
     chatIndex.receiverId === currentUser.uid;
 
+    const text = {
+      fontWeight: 800,
+  };
+
   return (
     <IonPage>
       <IonHeader className="mobileOnly">
@@ -130,7 +134,7 @@ const Chat: React.FC = () => {
         {chats && (
           <List
             className="mobileOnly"
-            sx={{ width: 444, maxWidth: "100%", bgcolor: "background.paper" }}
+            sx={{width: "100%", maxWidth: "100%", bgcolor: "background.paper" }}
           >
             {loading ? (
               <IonSpinner> </IonSpinner>
@@ -138,8 +142,13 @@ const Chat: React.FC = () => {
               Object.entries(chats)
                 ?.sort((a: any, b: any) => b[1].date - a[1].date)
                 .map((chat: any) => {
+                  let checkUnreadMessage =
+                    chat[1].lastMessage?.receiverId === currentUser?.uid &&
+                    chat[1].lastMessage?.receiverHasRead === false;
+            
                   return (
                     <ListItem
+                      sx={{ backgroundColor: checkUnreadMessage ? "#E4EFE7" : null }}
                       onClick={() => handleSelect(chat[1])}
                       key={chat[0]}
                     >
@@ -151,13 +160,12 @@ const Chat: React.FC = () => {
                       <ListItemText
                         primary={chat[1].userInfo.displayName}
                         secondary={chat[1].lastMessage?.text}
+                        secondaryTypographyProps={ checkUnreadMessage ? {style: text } : {}}
                       />
                       {typeof chat[1].lastMessage?.receiverHasRead ===
                       "undefined"
                         ? null
-                        : chat[1].lastMessage?.receiverId ===
-                            currentUser?.uid &&
-                          chat[1].lastMessage?.receiverHasRead === false && (
+                        : checkUnreadMessage && (
                             <CircleNotificationsIcon color="success" />
                           )}
                     </ListItem>

@@ -75,6 +75,10 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
   const clickedChatWhereNotSender = (chatIndex: any) =>
     chatIndex.receiverId === currentUser.uid;
 
+    const text = {
+      fontWeight: 800,
+  };
+
   return (
     <IonSplitPane className="desktopOnly" when="md" contentId="main">
       <IonMenu contentId="main">
@@ -83,7 +87,7 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
             <IonTitle>Chats</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonContent className="ion-padding">
+        <IonContent >
           {chats && (
             <List
               sx={{ width: 444, maxWidth: "100%", bgcolor: "background.paper" }}
@@ -93,8 +97,13 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
               ) : (
                 Object.entries(chats)
                   ?.sort((a: any, b: any) => b[1].date - a[1].date)
-                  .map((chat: any) => (
-                    <ListItem
+                  .map((chat: any) => {
+                    let checkUnreadMessage =
+                    chat[1].lastMessage?.receiverId === currentUser?.uid &&
+                    chat[1].lastMessage?.receiverHasRead === false;
+
+                   return <ListItem 
+                    sx={{ backgroundColor: checkUnreadMessage ? "#E4EFE7" : null }}
                       onClick={() => handleSelect(chat[1])}
                       key={chat[0]}
                     >
@@ -106,17 +115,16 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
                       <ListItemText
                         primary={chat[1].userInfo.displayName}
                         secondary={chat[1].lastMessage?.text}
+                        secondaryTypographyProps={ checkUnreadMessage ? {style: text } : {}}
                       />
                       {typeof chat[1].lastMessage?.receiverHasRead ===
                       "undefined"
                         ? null
-                        : chat[1].lastMessage?.receiverId ===
-                            currentUser?.uid &&
-                          chat[1].lastMessage?.receiverHasRead === false && (
+                        : checkUnreadMessage && (
                             <CircleNotificationsIcon color="success" />
                           )}
                     </ListItem>
-                  ))
+})
               )}
             </List>
           )}
