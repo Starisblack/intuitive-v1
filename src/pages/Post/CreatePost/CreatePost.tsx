@@ -73,7 +73,7 @@ const CreatePost: FC = () => {
         author: currentUser.fName + " " + currentUser.lName,
         date: format(new Date(), "MMMM dd, yyyy"),
         postMedia,
-        createdBy: currentUser.id,
+        createdBy: currentUser.uid,
         created: Timestamp.now(),
       });
 

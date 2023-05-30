@@ -101,7 +101,7 @@ const Home: React.FC = () => {
           </Link>
         </IonButtons>
         
-        <IonTitle>Home</IonTitle>
+        <IonTitle></IonTitle>
       </IonToolbar>
       </IonHeader>
       {loading ? (

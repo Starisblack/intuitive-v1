@@ -24,6 +24,7 @@ function Messages() {
     };
   }, [msgId]);
 
+  
   return (
     <div className="messages">
       {loading ? ( <div style={{display: "flex", height: "60vh", alignItems: "center", justifyContent: "center"}}>

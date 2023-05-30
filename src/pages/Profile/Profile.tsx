@@ -16,6 +16,7 @@ import {
   IonCardContent,
   IonCardTitle,
   IonLoading,
+  IonHeader,
 } from "@ionic/react";
 import { power } from "ionicons/icons";
 import UploadProfileImg from "../../components/UploadProfileImg";
@@ -23,9 +24,14 @@ import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import db from "../../firebase-config";
 import PopUp from "../../components/PopUp";
 import { useAppDispatch, useAppSelector } from "../../store/store";
-import { loadingStatus, logoutAsync, signoutLoading } from "../../reducers/authReducers";
+import {
+  loadingStatus,
+  logoutAsync,
+  signoutLoading,
+} from "../../reducers/authReducers";
 import { useHistory } from "react-router";
 import { user } from "../../reducers/authReducers";
+import { clearChat } from "../../reducers/chatReducers";
 
 interface IUser {
   fName?: string;
@@ -42,7 +48,7 @@ const Profile: FC = () => {
   const history = useHistory();
 
   const userDetail = useAppSelector(user);
-  const logoutLoading = useAppSelector(signoutLoading)
+  const logoutLoading = useAppSelector(signoutLoading);
 
   const dispatch = useAppDispatch();
 
@@ -61,16 +67,15 @@ const Profile: FC = () => {
   const [userPosts, setUserPosts] = useState<any>([]);
   // const [signoutLoading, setSignoutLoading] = useState<boolean>(false);
 
-
   useEffect(() => {
     if (!userDetail) {
-      history.push("/login");
+     return  history.push("/login");
     }
     setLoading(true);
 
     try {
       const getUserDetails = async () => {
-        const userRef = doc(db, "users", userDetail.id);
+        const userRef = doc(db, "users", userDetail?.uid);
         onSnapshot(userRef, (doc) => {
           const userData: any = doc.data();
           setUserData(userData);
@@ -80,7 +85,7 @@ const Profile: FC = () => {
       const getUserPosts = () => {
         const q = query(
           collection(db, "posts"),
-          where("createdBy", "==", userDetail?.id)
+          where("createdBy", "==", userDetail?.uid)
         );
 
         onSnapshot(q, (querySnapshot) => {
@@ -102,9 +107,9 @@ const Profile: FC = () => {
     }
   }, [history, userDetail]);
 
-
   const signOutHandler = async () => {
     await dispatch(logoutAsync());
+    await dispatch(clearChat())
   };
 
   const handleClickOpen = () => {
@@ -119,43 +124,44 @@ const Profile: FC = () => {
   let showPopUp = null;
 
   if (userDetail) {
-    showProfileImg = <UploadProfileImg id={userDetail?.id} fileURL={userDetail?.profileImg} />;
+    showProfileImg = (
+      <UploadProfileImg id={userDetail?.uid} fileURL={userDetail?.profileImg} />
+    );
     showPopUp = (
       <PopUp
         openPopUp={open}
-        id={userDetail?.id}
+        id={userDetail?.uid}
         userDetail={userDetail}
         handleClose={handleClose}
       />
     );
   }
 
-
-
   return (
     <IonPage>
-      <IonToolbar className="home-toolbar">
-        <IonButtons
-          onClick={signOutHandler}
-          className="logout-container"
-          slot="primary"
-        >
-          <IonIcon
-            size="large"
-            slot="end"
-            icon={power}
-            aria-hidden="true"
-          ></IonIcon>
-        </IonButtons>
-      </IonToolbar>
-
-      <IonContent  className="profile-page">
-      <IonLoading
-        cssClass="my-custom-class"
-        isOpen={logoutLoading}
-        onDidDismiss={() => console.log("signout")}
-        message={"logging out..."}
-      />
+      <IonHeader>
+        <IonToolbar className="home-toolbar">
+          <IonButtons
+            onClick={signOutHandler}
+            className="logout-container"
+            slot="primary"
+          >
+            <IonIcon
+              size="large"
+              slot="end"
+              icon={power}
+              aria-hidden="true"
+            ></IonIcon>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="profile-page">
+        <IonLoading
+          cssClass="my-custom-class"
+          isOpen={logoutLoading}
+          onDidDismiss={() => console.log("signout")}
+          message={"logging out..."}
+        />
         {loading ? (
           <div
             style={{

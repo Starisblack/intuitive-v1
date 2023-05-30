@@ -1,10 +1,15 @@
 .home-toolbar{
     --background: rgb(239, 185, 110);
     padding: 2% 6%;
+    border: 0;
+}
+
+.header-md::after {
+    background-image: none !important;
 }
 
 .logout-container{
-    padding: 10px;
+    padding: 5px;
     border-radius: 50px;
     background: white;
     cursor: pointer;
@@ -13,6 +18,8 @@
 .logout-container ion-icon{
     color: black;
     margin: 0 !important;
+    height: 30px;
+    width: 30px;
 }
 
 .profile-page{

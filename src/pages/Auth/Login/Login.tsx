@@ -55,7 +55,7 @@ const Login: FC = () => {
         dispatch(clearError());
       }, 3000);
     }
-  }, [auth, reset, history, dispatch]);
+  }, [auth, reset, history, dispatch, err]);
 
   //login in user and validate
   const onSubmitHandler: SubmitHandler<Inputs> = async (userInput) => {

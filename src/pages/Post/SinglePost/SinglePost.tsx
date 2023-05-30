@@ -113,7 +113,7 @@ const SinglePost: React.FC<UserDetailPageProps> = () => {
       </>
     );
 
-    if (currentUser.id === post.createdBy) {
+    if (currentUser.uid === post.createdBy) {
       showEditDelButton = (
         <div className="del-edit-box">
           <div id="edit" onClick={editHandler}>

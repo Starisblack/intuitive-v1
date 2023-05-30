@@ -28,7 +28,7 @@ type Inputs = {
   fName: string;
   lName: string;
   email: string;
-  id: string;
+  uid: string;
   password: string;
   confirmPassword: string;
   error: any;

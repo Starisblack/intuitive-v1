@@ -26,7 +26,7 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app)
 
-let auth ;
+let auth: any ;
 
 
 if (Capacitor.isNativePlatform()) {

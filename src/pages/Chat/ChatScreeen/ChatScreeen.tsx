@@ -10,20 +10,19 @@ import {
 } from "@ionic/react";
 import "./ChatScreeen.css";
 import { useAppSelector } from "../../../store/store";
-import { userSelected } from "../../../reducers/chatReducers";
+import { chatId, userSelected } from "../../../reducers/chatReducers";
 import Messages from "../Messages/Messages";
 import Input from "../../../components/Input/Input";
 import "./ChatScreeen.css";
-import { useEffect, useState } from "react";
 
 const ChatScreeen = () => {
   const user = useAppSelector(userSelected);
+  const msgId = useAppSelector(chatId)
 
-
- 
   return (
     <IonPage className="chat-screen-page">
-        <IonToolbar >
+      <IonHeader>
+        <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton color="light" defaultHref="#"></IonBackButton>
           </IonButtons>
@@ -32,16 +31,16 @@ const ChatScreeen = () => {
             {user?.displayName ? user.displayName : user.fName}
           </IonTitle>
         </IonToolbar>
+      </IonHeader>
       <IonContent className="chat-screen">
         <Messages />
       </IonContent>
 
       <IonFooter>
-        <Input />
+      <Input />
       </IonFooter>
     </IonPage>
   );
 };
 
 export default ChatScreeen;
-

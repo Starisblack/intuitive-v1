@@ -20,12 +20,12 @@ const Message: FC <MessageProps> = ({ message }) => {
   return (
     <div
       ref={ref}
-      className={`message ${message.senderId === currentUser?.id && "owner"}`}
+      className={`message ${message.senderId === currentUser?.uid && "owner"}`}
     >
       <div className="messageInfo">
         <img
           src={
-            message.senderId === currentUser?.id
+            message.senderId === currentUser?.uid
               ? currentUser.profileImg
               : selectedUser.profileImg
           }

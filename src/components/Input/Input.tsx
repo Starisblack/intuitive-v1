@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import {
   Timestamp,
   arrayUnion,
+  collection,
   doc,
+  getDoc,
+  getDocs,
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
@@ -14,34 +17,61 @@ import { chatId, userSelected } from "../../reducers/chatReducers";
 import "./Input.css";
 import { IonSpinner } from "@ionic/react";
 
+
 const Input = () => {
   const [text, setText] = useState("");
   const currentUser = useAppSelector(user);
   const selectedUser = useAppSelector(userSelected);
   const msgId = useAppSelector(chatId);
 
-  const [loading, setLoading] = useState(false);
+  const handleSelect = async () => {
+    const docRef = doc(db, "chats", msgId);
+    const docSnap: any = await getDoc(docRef);
+
+    const checkSenderOfTheLastMessage =
+      docSnap.data().messages[docSnap.data().messages.length - 1].senderId ===
+      currentUser.uid;
+
+    if (checkSenderOfTheLastMessage) {
+      return null;
+    } else {
+      await updateDoc(doc(db, "userChats", currentUser.uid), {
+        [msgId + ".lastMessage.receiverHasRead"]: true,
+      });
+      await updateDoc(doc(db, "userChats", selectedUser.uid), {
+        [msgId + ".lastMessage.receiverHasRead"]: true,
+      });
+    }
+
+    // messageRead(selectedChat);
+  };
+
+
+
 
   const handleSend = async () => {
+
+    console.log(msgId)
     if (text === "") {
       return alert("field can't be empty");
     }
 
     try {
-      setLoading(true);
-
+      setText("");
       await updateDoc(doc(db, "chats", msgId), {
         messages: arrayUnion({
           id: uuid(),
           text,
-          senderId: currentUser.id,
+          senderId: currentUser.uid,
           date: Timestamp.now(),
         }),
       });
 
-      await updateDoc(doc(db, "userChats", currentUser.id), {
+      await updateDoc(doc(db, "userChats", currentUser.uid), {
         [msgId + ".lastMessage"]: {
           text,
+          receiverId: selectedUser.uid,
+          receiverHasRead: false,
         },
         [msgId + ".date"]: serverTimestamp(),
       });
@@ -49,28 +79,26 @@ const Input = () => {
       await updateDoc(doc(db, "userChats", selectedUser.uid), {
         [msgId + ".lastMessage"]: {
           text,
+          receiverId: selectedUser.uid,
+          receiverHasRead: false,
         },
         [msgId + ".date"]: serverTimestamp(),
       });
-      setLoading(false);
-      setText("");
     } catch (error) {
       console.log(error);
-      setLoading(false);
     }
   };
   return (
     <div className="input">
       <input
+        onClick={handleSelect}
         type="text"
         placeholder="Type something ....."
         onChange={(e) => setText(e.target.value)}
         value={text}
       />
       <div className="send">
-        <button onClick={handleSend}>
-          {loading ? <IonSpinner name="dots"></IonSpinner> : "Send"}
-        </button>
+        <button onClick={handleSend}>Send</button>
       </div>
     </div>
   );

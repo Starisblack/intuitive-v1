@@ -36,7 +36,7 @@ export const signUp = async (userInput: {
   const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
   await setDoc(doc(db, "users", user.uid), {
-    id: user.uid,
+    uid: user.uid,
     fName,
     lName,
     isTarot: false,

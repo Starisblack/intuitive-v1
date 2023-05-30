@@ -16,13 +16,14 @@ import {
   ListItemText,
 } from "@mui/material";
 import { FC } from "react";
-import Message from "../../pages/Chat/Messages/Message/Message";
 import { useAppDispatch, useAppSelector } from "../../store/store";
-import { changeUser, userSelected } from "../../reducers/chatReducers";
+import { changeUser, chatId, userSelected } from "../../reducers/chatReducers";
 import { user } from "../../reducers/authReducers";
-import { useHistory } from "react-router";
 import Messages from "../../pages/Chat/Messages/Messages";
 import Input from "../Input/Input";
+import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
+import { doc, updateDoc } from "firebase/firestore";
+import db from "../../firebase-config";
 
 type ChatPanelProps = {
   chats: any;
@@ -33,10 +34,46 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
   const selectedUser = useAppSelector(userSelected);
   const currentUser = useAppSelector(user);
   const dispatch = useAppDispatch();
+  const msgId = useAppSelector(chatId);
 
-  const handleSelect = (selectedUser: any) => {
-    dispatch(changeUser({ user: selectedUser, currentUser: currentUser }));
+  // const handleSelect = (selectedUser: any) => {
+  //   messageRead(chat)
+  //   dispatch(changeUser({ user: selectedUser, currentUser: currentUser }));
+  // };
+
+  const handleSelect = async (selectedChat: any) => {
+    messageRead(selectedChat);
+    dispatch(
+      changeUser({ user: selectedChat.userInfo, currentUser: currentUser })
+    );
   };
+
+  const messageRead = async (chat: any) => {
+    const selectedUserId = chat.userInfo.uid;
+
+    const msgId =
+      currentUser.uid > selectedUserId
+        ? currentUser.uid + selectedUserId
+        : selectedUserId + currentUser.uid;
+
+    if (typeof chat.lastMessage === "undefined") {
+      return;
+    } else {
+      if (clickedChatWhereNotSender(chat.lastMessage)) {
+        await updateDoc(doc(db, "userChats", currentUser.uid), {
+          [msgId + ".lastMessage.receiverHasRead"]: true,
+        });
+        await updateDoc(doc(db, "userChats", selectedUserId), {
+          [msgId + ".lastMessage.receiverHasRead"]: true,
+        });
+      } else {
+        console.log("false");
+      }
+    }
+  };
+
+  const clickedChatWhereNotSender = (chatIndex: any) =>
+    chatIndex.receiverId === currentUser.uid;
 
   return (
     <IonSplitPane className="desktopOnly" when="md" contentId="main">
@@ -58,7 +95,7 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
                   ?.sort((a: any, b: any) => b[1].date - a[1].date)
                   .map((chat: any) => (
                     <ListItem
-                      onClick={() => handleSelect(chat[1].userInfo)}
+                      onClick={() => handleSelect(chat[1])}
                       key={chat[0]}
                     >
                       <ListItemAvatar>
@@ -70,6 +107,14 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
                         primary={chat[1].userInfo.displayName}
                         secondary={chat[1].lastMessage?.text}
                       />
+                      {typeof chat[1].lastMessage?.receiverHasRead ===
+                      "undefined"
+                        ? null
+                        : chat[1].lastMessage?.receiverId ===
+                            currentUser?.uid &&
+                          chat[1].lastMessage?.receiverHasRead === false && (
+                            <CircleNotificationsIcon color="success" />
+                          )}
                     </ListItem>
                   ))
               )}
@@ -90,12 +135,23 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="chat-screen">
-           <Messages />
-         
+          {msgId === "null" ? (
+            <div
+              style={{
+                display: "flex",
+                height: "70vh",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {" "}
+              <h2>Start a Conversation </h2>{" "}
+            </div>
+          ) : (
+            <Messages />
+          )}
         </IonContent>
-        <IonFooter>
-          <Input />
-        </IonFooter>
+        <IonFooter>{msgId !== "null" && <Input />}</IonFooter>
       </div>
     </IonSplitPane>
   );

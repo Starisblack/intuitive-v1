@@ -38,7 +38,7 @@ const Users: React.FC = () => {
         setLoading(true);
         const q = query(
           collection(db, "users"),
-          where("id", "!=", currentUser.id)
+          where("uid", "!=", currentUser.uid)
         );
 
         onSnapshot(q, (querySnapshot) => {

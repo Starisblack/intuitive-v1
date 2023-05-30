@@ -46,7 +46,7 @@ const SingleUserProfileView = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
 
-  console.log(window.innerWidth)
+  
 
   useEffect(() => {
     setLoading(true);
@@ -91,11 +91,11 @@ const SingleUserProfileView = () => {
     setFollowLoading(true);
     try {
       //  func to update user followers and those who are following
-      updateDoc(doc(db, "users", currentUser.id), {
-        following: arrayUnion(userDetail.id),
+      updateDoc(doc(db, "users", currentUser.uid), {
+        following: arrayUnion(userDetail.uid),
       }).then(() => {
         updateDoc(doc(db, "users", id), {
-          followers: arrayUnion(currentUser.id),
+          followers: arrayUnion(currentUser.uid),
         }).then((res) => {
           setFollowLoading(false);
           presentToast("Following", 1500, "top");
@@ -111,11 +111,11 @@ const SingleUserProfileView = () => {
     setFollowLoading(true);
     try {
       //  func to update user followers and those who are following
-      updateDoc(doc(db, "users", currentUser.id), {
+      updateDoc(doc(db, "users", currentUser.uid), {
         following: arrayRemove(id),
       }).then(() => {
         updateDoc(doc(db, "users", id), {
-          followers: arrayRemove(currentUser.id),
+          followers: arrayRemove(currentUser.uid),
         }).then((res) => {
           setFollowLoading(false);
           presentToast("success", 1500, "top");
@@ -130,33 +130,33 @@ const SingleUserProfileView = () => {
 
     // check whwther the chat collection in firestore exists, if not then create a new one
     const combinedId =
-      currentUser.id > userDetail.id
-        ? currentUser.id + userDetail.id
-        : userDetail.id + currentUser.id;
+      currentUser.uid > userDetail.uid
+        ? currentUser.uid + userDetail.uid
+        : userDetail.uid + currentUser.uid;
 
     try {
       setChatLoading(true);
       const res = await getDoc(doc(db, "chats", combinedId));
       if (!res.exists()) {
-        await setDoc(doc(db, "chats", combinedId), { messages: [] });
+        await setDoc(doc(db, "chats", combinedId), { messages: [] });}
 
-        await updateDoc(doc(db, "userChats", currentUser.id), {
+        await updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedId + ".userInfo"]: {
-            uid: userDetail.id,
+            uid: userDetail.uid,
             displayName: userDetail.fName,
             profileImg: userDetail.profileImg ? userDetail.profileImg : "",
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
-        await updateDoc(doc(db, "userChats", userDetail.id), {
+        await updateDoc(doc(db, "userChats", userDetail.uid), {
           [combinedId + ".userInfo"]: {
-            uid: currentUser.id,
+            uid: currentUser.uid,
             displayName: currentUser.fName,
             profileImg: currentUser.profileImg ? currentUser.profileImg : "",
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
-      }
+      
 
       dispatch(changeUser({ user: userDetail, currentUser: currentUser }));
       setChatLoading(false);
@@ -248,9 +248,9 @@ const SingleUserProfileView = () => {
                     Message
                   </IonButton>
 
-                  {userDetail?.followers?.includes(currentUser.id) ? (
+                  {userDetail?.followers?.includes(currentUser.uid) ? (
                     <IonButton
-                      onClick={() => unFollowHandler(userDetail.id)}
+                      onClick={() => unFollowHandler(userDetail.uid)}
                       style={{ margin: "10px" }}
                     >
                       {followLoading ? (
@@ -261,7 +261,7 @@ const SingleUserProfileView = () => {
                     </IonButton>
                   ) : (
                     <IonButton
-                      onClick={() => followHandler(userDetail.id)}
+                      onClick={() => followHandler(userDetail.uid)}
                       style={{ margin: "10px" }}
                     >
                       {followLoading ? (

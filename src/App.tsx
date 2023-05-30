@@ -1,5 +1,5 @@
 import { Redirect, Route } from "react-router-dom";
-import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from "@ionic/react";
+import { IonApp, IonBadge, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import Home from "./pages/Home";
 
@@ -34,12 +34,14 @@ import { isAuth } from "./reducers/authReducers";
 import { people, home, chatbubbles, person } from "ionicons/icons";
 import ChatScreeen from "./pages/Chat/ChatScreeen/ChatScreeen";
 import ForgotPassword from "./pages/Auth/ForgotPassword/ForgotPassword";
+import { chatNotification } from "./reducers/chatReducers";
 
 setupIonicReact();
 
 const App: React.FC = () => {
 
   const auth = useAppSelector(isAuth)
+  const notification = useAppSelector(chatNotification)
 
   let navTabs = (
     <IonTabBar
@@ -59,6 +61,7 @@ const App: React.FC = () => {
         </IonTabButton>
         <IonTabButton tab="tab2" href="/chat">
           <IonIcon aria-hidden="true" icon={chatbubbles} />
+          {notification >=1 && <IonBadge color="danger">{notification}</IonBadge>}
           <IonLabel>Chat</IonLabel>
         </IonTabButton>
         <IonTabButton tab="tab3" href="/users">
