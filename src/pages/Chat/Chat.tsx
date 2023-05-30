@@ -31,6 +31,7 @@ import {
 import ChatPanel from "../../components/ChatPanel/ChatPanel";
 import { changeUser, sendNotification } from "../../reducers/chatReducers";
 import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
+import Spinner from "../../components/Spinner";
 
 const Chat: React.FC = () => {
   const history = useHistory();
@@ -58,6 +59,7 @@ const Chat: React.FC = () => {
       currentUser && getChats();
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   }, [currentUser, history]);
 
@@ -131,15 +133,12 @@ const Chat: React.FC = () => {
           handleSelect={handleSelect}
           chats={chats}
         />
-        {chats && (
+        {loading ? <Spinner /> : (
           <List
             className="mobileOnly"
             sx={{width: "100%", maxWidth: "100%", bgcolor: "background.paper" }}
           >
-            {loading ? (
-              <IonSpinner> </IonSpinner>
-            ) : (
-              Object.entries(chats)
+            {chats && Object.entries(chats)
                 ?.sort((a: any, b: any) => b[1].date - a[1].date)
                 .map((chat: any) => {
                   let checkUnreadMessage =
@@ -159,7 +158,7 @@ const Chat: React.FC = () => {
                       </ListItemAvatar>
                       <ListItemText
                         primary={chat[1].userInfo.displayName}
-                        secondary={chat[1].lastMessage?.text}
+                        secondary={chat[1].lastMessage?.text.length >= 33 ? chat[1].lastMessage?.text.substring(0, 36) + "..." :  chat[1].lastMessage?.text }
                         secondaryTypographyProps={ checkUnreadMessage ? {style: text } : {}}
                       />
                       {typeof chat[1].lastMessage?.receiverHasRead ===
@@ -171,7 +170,7 @@ const Chat: React.FC = () => {
                     </ListItem>
                   );
                 })
-            )}
+            }
           </List>
         )}
       </IonContent>

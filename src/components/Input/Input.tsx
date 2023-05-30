@@ -17,7 +17,6 @@ import { chatId, userSelected } from "../../reducers/chatReducers";
 import "./Input.css";
 import { IonSpinner } from "@ionic/react";
 
-
 const Input = () => {
   const [text, setText] = useState("");
   const currentUser = useAppSelector(user);
@@ -46,12 +45,18 @@ const Input = () => {
     // messageRead(selectedChat);
   };
 
-
-
+  const handleEnterKey = (e: any) => {
+    if (e.key === "Enter") {
+      if (text === "") {
+        return alert("field can't be empty");
+      } else{
+        handleSend()
+      }
+    }
+  };
 
   const handleSend = async () => {
-
-    console.log(msgId)
+    
     if (text === "") {
       return alert("field can't be empty");
     }
@@ -91,6 +96,7 @@ const Input = () => {
   return (
     <div className="input">
       <input
+        onKeyDown={handleEnterKey}
         onClick={handleSelect}
         type="text"
         placeholder="Type something ....."

@@ -24,6 +24,7 @@ import Input from "../Input/Input";
 import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import { doc, updateDoc } from "firebase/firestore";
 import db from "../../firebase-config";
+import Spinner from "../Spinner";
 
 type ChatPanelProps = {
   chats: any;
@@ -88,14 +89,11 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
           </IonToolbar>
         </IonHeader>
         <IonContent >
-          {chats && (
+          {loading ? <Spinner /> : (
             <List
               sx={{ width: 444, maxWidth: "100%", bgcolor: "background.paper" }}
             >
-              {loading ? (
-                <IonSpinner> </IonSpinner>
-              ) : (
-                Object.entries(chats)
+              {chats && Object.entries(chats)
                   ?.sort((a: any, b: any) => b[1].date - a[1].date)
                   .map((chat: any) => {
                     let checkUnreadMessage =
@@ -114,7 +112,7 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
                       </ListItemAvatar>
                       <ListItemText
                         primary={chat[1].userInfo.displayName}
-                        secondary={chat[1].lastMessage?.text}
+                        secondary={chat[1].lastMessage?.text.length >= 33 ? chat[1].lastMessage?.text.substring(0, 36) + "..." :  chat[1].lastMessage?.text }
                         secondaryTypographyProps={ checkUnreadMessage ? {style: text } : {}}
                       />
                       {typeof chat[1].lastMessage?.receiverHasRead ===
@@ -125,7 +123,7 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
                           )}
                     </ListItem>
 })
-              )}
+              }
             </List>
           )}
         </IonContent>

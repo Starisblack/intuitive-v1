@@ -11,7 +11,7 @@
 }
 
 .message.owner {
-    flex-direction: row-reverse;
+  flex-direction: row-reverse;
 }
 
 .messageInfo img {
@@ -33,6 +33,8 @@
   padding: 10px 20px;
   border-radius: 0px 10px 10px 10px;
   max-width: max-content;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .owner .messageContent p {
@@ -43,4 +45,11 @@
 
 .owner .messageContent {
   align-items: flex-end;
+}
+
+.read-more-btn {
+  font-size: 16px;
+  background: transparent;
+  color: black;
+  font-weight: 600;
 }

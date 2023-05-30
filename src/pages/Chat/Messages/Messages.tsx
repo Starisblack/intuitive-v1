@@ -13,6 +13,7 @@ function Messages() {
   const msgId = useAppSelector(chatId);
   const [loading, setLoading] = useState<boolean>(false);
 
+
   useEffect(() => {
     setLoading(true);
     const unSub = onSnapshot(doc(db, "chats", msgId), (doc) => {

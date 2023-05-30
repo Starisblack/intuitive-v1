@@ -1,19 +1,18 @@
-import React, { FC, useContext, useEffect, useRef } from "react";
+import React, { FC, useContext, useEffect, useRef, useState } from "react";
 import { useAppSelector } from "../../../../store/store";
 import { user } from "../../../../reducers/authReducers";
 import { userSelected } from "../../../../reducers/chatReducers";
-import "./Message.css"
-
+import "./Message.css";
 
 type MessageProps = {
-    message: any
-}
-const Message: FC <MessageProps> = ({ message }) => {
- 
-    const currentUser = useAppSelector(user)
-    const selectedUser = useAppSelector(userSelected)
+  message: any;
+};
+const Message: FC<MessageProps> = ({ message }) => {
+  const currentUser = useAppSelector(user);
+  const selectedUser = useAppSelector(userSelected);
   const ref = useRef<any>();
-  
+  const [showMore, setShowMore] = useState<boolean>(false);
+
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
@@ -34,8 +33,26 @@ const Message: FC <MessageProps> = ({ message }) => {
         <span></span>
       </div>
       <div className="messageContent">
-        <p>{message.text}</p>
+        {message.text.length >= 400 ? (
+          <p>
+            <span>{showMore ? message.text  + "  ": message.text.substring(0, 400) + "... "}</span>
+            <button
+              onClick={() => setShowMore(!showMore)}
+              // style={customStyle}
+              type="button"
+              className="read-more-btn"
+            >
+              {showMore ? "Read less" : "Read more"}
+            </button>
+          </p>
+        ) : (
+          <p>{message.text}</p>
+        )}
 
+        {/* <p>{showMore ? message.text : <>
+        `${message.text.substring(0, 400)}`
+       
+        </>}</p> */}
       </div>
     </div>
   );
