@@ -3,6 +3,8 @@ import { useAppSelector } from "../../../../store/store";
 import { user } from "../../../../reducers/authReducers";
 import { userSelected } from "../../../../reducers/chatReducers";
 import "./Message.css";
+import * as dayjs from 'dayjs'
+
 
 type MessageProps = {
   message: any;
@@ -12,6 +14,7 @@ const Message: FC<MessageProps> = ({ message }) => {
   const selectedUser = useAppSelector(userSelected);
   const ref = useRef<any>();
   const [showMore, setShowMore] = useState<boolean>(false);
+ 
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,7 +33,7 @@ const Message: FC<MessageProps> = ({ message }) => {
           }
           alt=""
         />
-        <span></span>
+       
       </div>
       <div className="messageContent">
         {message.text.length >= 400 ? (
@@ -45,8 +48,10 @@ const Message: FC<MessageProps> = ({ message }) => {
               {showMore ? "Read less" : "Read more"}
             </button>
           </p>
-        ) : (
+        ) : (<div >
           <p>{message.text}</p>
+          <span className="message-time">{dayjs.unix(message.date).format("hh:mma")}</span>
+          </div>
         )}
 
         {/* <p>{showMore ? message.text : <>
