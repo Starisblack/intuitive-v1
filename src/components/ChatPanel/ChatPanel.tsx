@@ -151,7 +151,7 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
               }}
             >
               {" "}
-              <h2>Start a Conversation </h2>{" "}
+              <h2 >Start a Conversation </h2>{" "}
             </div>
           ) : (
             <Messages />
