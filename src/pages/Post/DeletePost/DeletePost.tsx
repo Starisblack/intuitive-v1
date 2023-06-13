@@ -8,18 +8,17 @@ import db, { storage } from "../../../firebase-config";
 import { useHistory } from "react-router";
 
 type DeletePostProps = {
-  id: string,
-  fileRef: string,
-  path: string
-}
-const  DeletePost: FC<DeletePostProps> = ({id, fileRef, path}) => {
+  id: string;
+  fileRef?: string;
+  path?: string;
+};
+const DeletePost: FC<DeletePostProps> = ({ id, fileRef, path }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const httpsReference = ref(storage, fileRef);
 
   let fileName = httpsReference.name;
 
- 
   const history = useHistory();
 
   const [presentAlert] = useIonAlert();
@@ -30,17 +29,23 @@ const  DeletePost: FC<DeletePostProps> = ({id, fileRef, path}) => {
     const deletePost = async () => {
       const postDocRef = doc(db, "posts", id);
       try {
-        await deleteDoc(postDocRef);
-        await deleteObject(desertRef)
-          .then(() => {
-            console.log("File deleted successfully");
-          })
-          .catch((error) => {
-            console.log(" Uh-oh, an error occurred!");
-          });
+        if (!fileRef) {
+          await deleteDoc(postDocRef);
+          setLoading(false);
+          history.push("/");
+        } else {
+          await deleteDoc(postDocRef);
+          await deleteObject(desertRef)
+            .then(() => {
+              console.log("File deleted successfully");
+            })
+            .catch((error) => {
+              console.log(" Uh-oh, an error occurred!");
+            });
 
-        setLoading(false);
-        history.push("/");
+          setLoading(false);
+          history.push("/");
+        }
       } catch (err) {
         alert(err);
       }
@@ -76,6 +81,5 @@ const  DeletePost: FC<DeletePostProps> = ({id, fileRef, path}) => {
       <p style={{ margin: "0" }}>Delete</p>
     </div>
   );
-}
+};
 export default DeletePost;
-

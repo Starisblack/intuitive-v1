@@ -25,6 +25,7 @@ import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import { doc, updateDoc } from "firebase/firestore";
 import db from "../../firebase-config";
 import Spinner from "../Spinner";
+import ChatCard from "../ChatCard";
 
 type ChatPanelProps = {
   chats: any;
@@ -42,11 +43,15 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
   //   dispatch(changeUser({ user: selectedUser, currentUser: currentUser }));
   // };
 
-  const handleSelect = async (selectedChat: any) => {
+  const handleSelect = async (selectedChat: any, profileImg?: any) => {
     messageRead(selectedChat);
-    dispatch(
-      changeUser({ user: selectedChat.userInfo, currentUser: currentUser })
-    );
+    let selectUserInfo = selectedChat.userInfo;
+
+    if (selectedChat.userInfo.profileImg === "") {
+      selectUserInfo.profileImg = profileImg;
+    }
+
+    dispatch(changeUser({ user: selectUserInfo, currentUser: currentUser }));
   };
 
   const messageRead = async (chat: any) => {
@@ -76,8 +81,8 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
   const clickedChatWhereNotSender = (chatIndex: any) =>
     chatIndex.receiverId === currentUser.uid;
 
-    const text = {
-      fontWeight: 800,
+  const text = {
+    fontWeight: 800,
   };
 
   return (
@@ -88,42 +93,29 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
             <IonTitle>Chats</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonContent >
-          {loading ? <Spinner /> : (
+        <IonContent>
+          {loading ? (
+            <Spinner />
+          ) : (
             <List
               sx={{ width: 444, maxWidth: "100%", bgcolor: "background.paper" }}
             >
-              {chats && Object.entries(chats)
+              {chats &&
+                Object.entries(chats)
                   ?.sort((a: any, b: any) => b[1].date - a[1].date)
                   .map((chat: any) => {
                     let checkUnreadMessage =
-                    chat[1].lastMessage?.receiverId === currentUser?.uid &&
-                    chat[1].lastMessage?.receiverHasRead === false;
+                      chat[1].lastMessage?.receiverId === currentUser?.uid &&
+                      chat[1].lastMessage?.receiverHasRead === false;
 
-                   return <ListItem 
-                    sx={{ backgroundColor: checkUnreadMessage ? "#E4EFE7" : null }}
-                      onClick={() => handleSelect(chat[1])}
-                      key={chat[0]}
-                    >
-                      <ListItemAvatar>
-                        <Avatar>
-                          <img src={chat[1].userInfo.profileImg} alt="" />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={chat[1].userInfo.displayName}
-                        secondary={chat[1].lastMessage?.text.length >= 33 ? chat[1].lastMessage?.text.substring(0, 36) + "..." :  chat[1].lastMessage?.text }
-                        secondaryTypographyProps={ checkUnreadMessage ? {style: text } : {}}
+                    return (
+                      <ChatCard
+                        chat={chat}
+                        checkUnreadMessage={checkUnreadMessage}
+                        handleSelect={handleSelect}
                       />
-                      {typeof chat[1].lastMessage?.receiverHasRead ===
-                      "undefined"
-                        ? null
-                        : checkUnreadMessage && (
-                            <CircleNotificationsIcon color="success" />
-                          )}
-                    </ListItem>
-})
-              }
+                    );
+                  })}
             </List>
           )}
         </IonContent>
@@ -151,7 +143,7 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
               }}
             >
               {" "}
-              <h2 >Start a Conversation </h2>{" "}
+              <h2>Start a Conversation </h2>{" "}
             </div>
           ) : (
             <Messages />

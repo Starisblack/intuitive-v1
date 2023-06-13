@@ -32,7 +32,8 @@ import db, { app } from "../../../firebase-config";
 import { user } from "../../../reducers/authReducers";
 import "./CreatePost.css";
 import { useAppSelector } from "../../../store/store";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
+import Resizer from "react-image-file-resizer";
 
 type Inputs = {
   category: string;
@@ -41,6 +42,25 @@ type Inputs = {
   picture: any;
   video: any;
 };
+
+
+const resizeFile = (file: any) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      300,
+      300,
+      "JPEG",
+      100,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      "file"
+    );
+  });
+
+
 
 const CreatePost: FC = () => {
   let history = useHistory();
@@ -60,26 +80,43 @@ const CreatePost: FC = () => {
   // const picture = watch("picture");
   // const video = watch("video");
 
-  const createPost = async (url: string, userInput: any) => {
+  const createPost = async (userInput: any, url?: string) => {
     const { content, category, title } = userInput;
+
     const postMedia =
       userInput.picture === "" ? { videoURL: url } : { imgURL: url };
 
     try {
-      await addDoc(collection(db, "posts"), {
-        content,
-        category,
-        title,
-        author: currentUser.fName + " " + currentUser.lName,
-        date: format(new Date(), "MMMM dd, yyyy"),
-        postMedia,
-        createdBy: currentUser.uid,
-        created: Timestamp.now(),
-      });
+      if (!url) {
+        await addDoc(collection(db, "posts"), {
+          content,
+          category,
+          title,
+          author: currentUser.fName + " " + currentUser.lName,
+          date: format(new Date(), "MMMM dd, yyyy"),
+          createdBy: currentUser.uid,
+          created: Timestamp.now(),
+        });
 
-      setLoading(false);
-      reset();
-      history.push("/home");
+        setLoading(false);
+        reset();
+        history.push("/home");
+      } else {
+        await addDoc(collection(db, "posts"), {
+          content,
+          category,
+          title,
+          author: currentUser.fName + " " + currentUser.lName,
+          date: format(new Date(), "MMMM dd, yyyy"),
+          postMedia,
+          createdBy: currentUser.uid,
+          created: Timestamp.now(),
+        });
+
+        setLoading(false);
+        reset();
+        history.push("/home");
+      }
     } catch (e) {
       alert("Error adding document: " + e);
       setLoading(false);
@@ -102,7 +139,7 @@ const CreatePost: FC = () => {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          createPost(url, userInput);
+          createPost(userInput, url);
         });
       }
     );
@@ -110,7 +147,12 @@ const CreatePost: FC = () => {
 
   const onSubmitHandler: SubmitHandler<Inputs> = async (userInput) => {
     setLoading(true);
-    uploadPostImg(userInput);
+    if (!file) {
+      createPost(userInput);
+    } else {
+        uploadPostImg(userInput);
+    }
+   
   };
 
   return (
@@ -123,12 +165,7 @@ const CreatePost: FC = () => {
           <IonTitle>Create a New Post</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent >
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large"> App</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+      <IonContent>
         <main className="create-post-content">
           <IonLoading
             cssClass="my-custom-class"
@@ -201,8 +238,15 @@ const CreatePost: FC = () => {
                 className="pick-img-Btn"
                 type="file"
                 {...register("picture", {
-                  onChange: (e) => {
-                    setFile(e.target.files[0]);
+                  onChange: async (e) => {
+                    // setFile(e.target.files[0]);
+                    try {
+                      const file = e.target.files[0];
+                      const image = await resizeFile(file);
+                       setFile(image);
+                    } catch (err) {
+                      console.log(err);
+                    }
                     resetField("video");
                   },
                 })}

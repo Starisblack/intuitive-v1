@@ -11,19 +11,38 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import Toast from "./Toast/Toast";
-
+import Resizer from "react-image-file-resizer";
 
 type UploadProfileImgProps = {
   id?: any;
-  fileURL: string
+  fileURL: any;
 };
+
+// func to resize img
+
+const resizeFile = (file: any) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      300,
+      300,
+      "JPEG",
+      100,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      "file"
+    );
+  });
 
 const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const inputRef: any = useRef();
-  const presentToast = Toast()
-  
-  
+  const presentToast = Toast();
+
+  console.log(fileURL);
+
   const httpsReference = ref(storage, fileURL);
 
   let fileName = httpsReference.name;
@@ -34,16 +53,14 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
   const postDocRef = doc(db, "users", id);
 
   const uploadProfileImg = async (file: any) => {
-    setLoading(true)
-
-    // await deleteObject(desertRef);
 
     const storage = getStorage(app);
     const storageRef = ref(storage, "profile/" + file.name);
     const uploadTask = uploadBytesResumable(storageRef, file);
-   
-       
-    uploadTask.on(
+
+
+
+    const uploadingImg = () => {uploadTask.on(
       "state_changed",
       null,
       (error) => {
@@ -54,10 +71,9 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
         getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
           try {
             await updateDoc(postDocRef, {
-                profileImg: url
+              profileImg: url,
             });
             setLoading(false);
-            
           } catch (err) {
             alert(err);
             setLoading(false);
@@ -65,22 +81,40 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
         });
       }
     );
+    }
+
+    
+    if (!fileURL) {
+      await uploadingImg();
+      setLoading(false);
+    } else {
+      await deleteObject(desertRef);
+      uploadingImg();
+      setLoading(false);
+    }
+
+ 
   };
 
-  const handleChange = (e: any) => {
-    uploadProfileImg(e.target.files[0])
+  const handleChange = async (e: any) => {
+    setLoading(true);
+    try {
+      const file = e.target.files[0];
+      const image = await resizeFile(file);
+      await uploadProfileImg(image);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
   };
-
-
-
-
 
   return (
     <IonIcon onClick={() => inputRef.current.click()} icon={camera}>
       <IonLoading
         cssClass="my-custom-class"
         isOpen={loading}
-        onDidDismiss={() =>  presentToast("Updated Successfully", 1500, "top")}
+        onDidDismiss={() => presentToast("Updated Successfully", 1500, "top")}
         message={"Uploading..."}
       />
       <input

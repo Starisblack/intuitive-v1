@@ -32,6 +32,7 @@ import ChatPanel from "../../components/ChatPanel/ChatPanel";
 import { changeUser, sendNotification } from "../../reducers/chatReducers";
 import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import Spinner from "../../components/Spinner";
+import ChatCard from "../../components/ChatCard";
 
 const Chat: React.FC = () => {
   const history = useHistory();
@@ -81,11 +82,18 @@ const Chat: React.FC = () => {
     });
   }, [chats]);
 
-  const handleSelect = async (selectedChat: any) => {
+  const handleSelect = async (selectedChat: any, profileImg?: any) => {
     messageRead(selectedChat);
-    dispatch(
-      changeUser({ user: selectedChat.userInfo, currentUser: currentUser })
-    );
+
+    let selectUserInfo = selectedChat.userInfo;
+
+    // check if user as profile pic
+    
+    if (selectedChat.userInfo.profileImg === "") {
+      selectUserInfo.profileImg = profileImg;
+    }
+
+    dispatch(changeUser({ user: selectUserInfo, currentUser: currentUser }));
     history.push("/chat-screen");
   };
 
@@ -116,8 +124,8 @@ const Chat: React.FC = () => {
   const clickedChatWhereNotSender = (chatIndex: any) =>
     chatIndex.receiverId === currentUser.uid;
 
-    const text = {
-      fontWeight: 800,
+  const text = {
+    fontWeight: 800,
   };
 
   return (
@@ -133,44 +141,35 @@ const Chat: React.FC = () => {
           handleSelect={handleSelect}
           chats={chats}
         />
-        {loading ? <Spinner /> : (
+        {loading ? (
+          <Spinner />
+        ) : (
           <List
             className="mobileOnly"
-            sx={{width: "100%", maxWidth: "100%", bgcolor: "background.paper" }}
+            sx={{
+              width: "100%",
+              maxWidth: "100%",
+              bgcolor: "background.paper",
+            }}
           >
-            {chats && Object.entries(chats)
+            {chats &&
+              Object.entries(chats)
                 ?.sort((a: any, b: any) => b[1].date - a[1].date)
                 .map((chat: any) => {
                   let checkUnreadMessage =
                     chat[1].lastMessage?.receiverId === currentUser?.uid &&
                     chat[1].lastMessage?.receiverHasRead === false;
-            
+
                   return (
-                    <ListItem
-                      sx={{ backgroundColor: checkUnreadMessage ? "#E4EFE7" : null }}
-                      onClick={() => handleSelect(chat[1])}
-                      key={chat[0]}
-                    >
-                      <ListItemAvatar>
-                        <Avatar>
-                          <img src={chat[1].userInfo.profileImg} alt="" />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={chat[1].userInfo.displayName}
-                        secondary={chat[1].lastMessage?.text.length >= 33 ? chat[1].lastMessage?.text.substring(0, 36) + "..." :  chat[1].lastMessage?.text }
-                        secondaryTypographyProps={ checkUnreadMessage ? {style: text } : {}}
+                    <>
+                      <ChatCard
+                        chat={chat}
+                        checkUnreadMessage={checkUnreadMessage}
+                        handleSelect={handleSelect}
                       />
-                      {typeof chat[1].lastMessage?.receiverHasRead ===
-                      "undefined"
-                        ? null
-                        : checkUnreadMessage && (
-                            <CircleNotificationsIcon color="success" />
-                          )}
-                    </ListItem>
+                    </>
                   );
-                })
-            }
+                })}
           </List>
         )}
       </IonContent>

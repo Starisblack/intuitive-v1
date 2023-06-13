@@ -32,7 +32,7 @@ import {
 import { useHistory } from "react-router";
 import { user } from "../../reducers/authReducers";
 import { clearChat } from "../../reducers/chatReducers";
-
+import defaultImg from "../../assets/postdefault.jpg"
 interface IUser {
   fName?: string;
   lName?: string;
@@ -43,6 +43,9 @@ interface IUser {
   followers?: any;
   following?: any;
 }
+
+
+
 
 const Profile: FC = () => {
   const history = useHistory();
@@ -124,8 +127,9 @@ const Profile: FC = () => {
   let showPopUp = null;
 
   if (userDetail) {
+  
     showProfileImg = (
-      <UploadProfileImg id={userDetail?.uid} fileURL={userDetail?.profileImg} />
+      <UploadProfileImg id={userDetail?.uid} fileURL={userData?.profileImg} />
     );
     showPopUp = (
       <PopUp
@@ -191,7 +195,7 @@ const Profile: FC = () => {
                         src={
                           userData?.profileImg
                             ? userData?.profileImg
-                            : "https://ionicframework.com/docs/img/demos/card-media.png"
+                            : defaultImg
                         }
                         alt="user"
                       />

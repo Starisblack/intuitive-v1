@@ -54,17 +54,17 @@ const TopicTabs: React.FC<TopicTabsProps> = ({ posts }) => {
     return (
       <>
         {posts
-          .filter((post: any) => post.category === category)
+          ?.filter((post: any) => post.category === category)
           .map((post: any) => {
             return (
               <IonCol key={post.id} size="12" size-sm="6" size-lg="4">
                 <PostCard
-                  author={post.author}
-                  date={post.date}
-                  title={post.title}
+                  author={post?.author}
+                  date={post?.date}
+                  title={post?.title}
                   content={post.content}
-                  imgURL={post.postMedia.imgURL}
-                  videoURL={post.postMedia.videoURL}
+                  imgURL={post?.postMedia?.imgURL}
+                  videoURL={post?.postMedia?.videoURL}
                   link={"post/" + post.id}
                 />
               </IonCol>
@@ -104,8 +104,8 @@ const TopicTabs: React.FC<TopicTabsProps> = ({ posts }) => {
                     date={post.date}
                     title={post.title}
                     content={post.content}
-                    imgURL={post.postMedia.imgURL}
-                    videoURL={post.postMedia.videoURL}
+                    imgURL={post?.postMedia?.imgURL}
+                    videoURL={post?.postMedia?.videoURL}
                     link={"post/" + post.id}
                   />
                 </IonCol>

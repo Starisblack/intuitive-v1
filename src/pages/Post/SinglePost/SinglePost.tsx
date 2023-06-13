@@ -25,6 +25,7 @@ import UpdatePost from "../UpdatePost/UpdatePost";
 import { useAppSelector } from "../../../store/store";
 import { user } from "../../../reducers/authReducers";
 // import updatePost from "../Post/UpdatePost/UpdatePost";
+import postDefaultImg from "../../../assets/postdefault.jpg" 
 
 type UserDetailPageProps = {
   id?: any;
@@ -85,10 +86,12 @@ const SinglePost: React.FC<UserDetailPageProps> = () => {
   if (post && currentUser) {
     singlePost = (
       <>
-        {post.postMedia.imgURL ? (
-          <IonImg src={post.postMedia.imgURL} alt=""></IonImg>
+        {!post?.postMedia?.imgURL && !post?.postMedia?.videoURL ? (
+          <IonImg src={postDefaultImg} alt=""></IonImg>
+        ) : post?.postMedia?.imgURL ? (
+          <IonImg src={post.postMedia?.imgURL} alt=""></IonImg>
         ) : (
-          <VideoPlayer link={post.postMedia.videoURL} height="350px" />
+          <VideoPlayer link={post.postMedia?.videoURL} height="350px" />
         )}
 
         <div className="post-content-container">
@@ -113,7 +116,7 @@ const SinglePost: React.FC<UserDetailPageProps> = () => {
       </>
     );
 
-    if (currentUser.uid === post.createdBy) {
+    if (currentUser?.uid === post?.createdBy) {
       showEditDelButton = (
         <div className="del-edit-box">
           <div id="edit" onClick={editHandler}>
@@ -125,11 +128,11 @@ const SinglePost: React.FC<UserDetailPageProps> = () => {
           <DeletePost
             id={id}
             fileRef={
-              post.postMedia.imgURL
-                ? post.postMedia.imgURL
-                : post.postMedia.videoURL
+              post?.postMedia?.imgURL
+                ? post?.postMedia?.imgURL
+                : post?.postMedia?.videoURL
             }
-            path={post.postMedia.imgURL ? "images/" : "videos/"}
+            path={post?.postMedia?.imgURL ? "images/" : "videos/"}
           />
         </div>
       );
