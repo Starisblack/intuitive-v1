@@ -41,7 +41,6 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
   const inputRef: any = useRef();
   const presentToast = Toast();
 
-
   const httpsReference = ref(storage, fileURL);
 
   let fileName = httpsReference.name;
@@ -52,53 +51,50 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
   const postDocRef = doc(db, "users", id);
 
   const uploadProfile = async (file: any) => {
-
     const storage = getStorage(app);
     const storageRef = ref(storage, "profile/" + file.name);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
+    const uploadingImg = () => {
+      uploadTask.on(
+        "state_changed",
+        null,
+        (error) => {
+          alert(error);
+          setLoading(false);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+            try {
+              await updateDoc(postDocRef, {
+                profileImg: url,
+              });
+              setLoading(false);
+            } catch (err) {
+              alert(err);
+              setLoading(false);
+            }
+          });
+        }
+      );
+    };
 
-
-    const uploadingImg = () => {uploadTask.on(
-      "state_changed",
-      null,
-      (error) => {
-        alert(error);
-        setLoading(false);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-          try {
-            await updateDoc(postDocRef, {
-              profileImg: url,
-            });
-            setLoading(false);
-          } catch (err) {
-            alert(err);
-            setLoading(false);
-          }
-        });
-      }
-    );
-    }
-
-    
     if (!fileURL) {
-       uploadingImg();
+      uploadingImg();
     } else {
       await deleteObject(desertRef);
       uploadingImg();
     }
-
- 
   };
 
   const handleChange = async (e: any) => {
-    setLoading(true);
+    const file = e.target.files[0];
     try {
-      const file = e.target.files[0];
-      const image = await resizeFile(file);
-      await uploadProfile(image);
+      if (file) {
+        setLoading(true);
+        const image = await resizeFile(file);
+        await uploadProfile(image);
+      }
     } catch (err) {
       console.log(err);
       setLoading(false);
