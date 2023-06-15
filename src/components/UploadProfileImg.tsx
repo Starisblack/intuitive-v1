@@ -41,7 +41,6 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
   const inputRef: any = useRef();
   const presentToast = Toast();
 
-  console.log(fileURL);
 
   const httpsReference = ref(storage, fileURL);
 
@@ -52,7 +51,7 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
 
   const postDocRef = doc(db, "users", id);
 
-  const uploadProfileImg = async (file: any) => {
+  const uploadProfile = async (file: any) => {
 
     const storage = getStorage(app);
     const storageRef = ref(storage, "profile/" + file.name);
@@ -85,12 +84,10 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
 
     
     if (!fileURL) {
-      await uploadingImg();
-      setLoading(false);
+       uploadingImg();
     } else {
       await deleteObject(desertRef);
       uploadingImg();
-      setLoading(false);
     }
 
  
@@ -101,8 +98,7 @@ const UploadProfileImg: FC<UploadProfileImgProps> = ({ id, fileURL }) => {
     try {
       const file = e.target.files[0];
       const image = await resizeFile(file);
-      await uploadProfileImg(image);
-      setLoading(false);
+      await uploadProfile(image);
     } catch (err) {
       console.log(err);
       setLoading(false);
