@@ -124,7 +124,7 @@ const ChatPanel: FC<ChatPanelProps> = ({ chats, loading }) => {
       <div className="ion-page" id="main">
         <IonHeader>
           <IonToolbar>
-            <IonTitle style={{ color: "white" }}>
+            <IonTitle style={{ color: "black" }}>
               {" "}
               {selectedUser?.displayName
                 ? selectedUser?.displayName

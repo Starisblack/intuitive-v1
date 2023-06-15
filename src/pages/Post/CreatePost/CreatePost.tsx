@@ -66,7 +66,7 @@ const CreatePost: FC = () => {
   let history = useHistory();
 
   const currentUser = useAppSelector(user);
-  const { handleSubmit, register, resetField, reset, watch } = useForm<Inputs>({
+  const { handleSubmit, register, resetField, reset, watch, setValue } = useForm<Inputs>({
     mode: "onChange",
     defaultValues: {
       video: "",
@@ -143,6 +143,27 @@ const CreatePost: FC = () => {
         });
       }
     );
+  };
+
+
+  const validateSelectedVideoFile = (file: any) => {
+    const MAX_FILE_SIZE = 100120 // 100MB
+
+    if (!file) {
+      return  alert("Please choose a file");
+    }
+
+    const fileSizeKiloBytes = file.size / 1024
+
+    if(fileSizeKiloBytes > MAX_FILE_SIZE){
+      alert("File size is greater than maximum limit 100MB");
+      setValue("video", null)
+    } else{
+      setFile(file)
+    }
+
+
+    
   };
 
   const onSubmitHandler: SubmitHandler<Inputs> = async (userInput) => {
@@ -267,7 +288,7 @@ const CreatePost: FC = () => {
                 type="file"
                 {...register("video", {
                   onChange: (e) => {
-                    setFile(e.target.files[0]);
+                    validateSelectedVideoFile(e.target.files[0]);
                     resetField("picture");
                   },
                 })}

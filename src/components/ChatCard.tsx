@@ -1,4 +1,4 @@
-import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+import { Avatar, Divider, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import { FC, useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -37,6 +37,7 @@ const ChatCard: FC<ChatCardProps> = ({
   };
 
   return (
+    <>
     <ListItem
       sx={{ backgroundColor: checkUnreadMessage ? "#E4EFE7" : null }}
       onClick={() => handleSelect(chat[1], user.profileImg)}
@@ -60,7 +61,9 @@ const ChatCard: FC<ChatCardProps> = ({
         ? null
         : checkUnreadMessage && <CircleNotificationsIcon color="success" />}
     </ListItem>
+    <Divider  sx={{width: "80%", mx: "auto"}}/>
+    </>
   );
-};
+}; 
 
 export default ChatCard;
